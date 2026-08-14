@@ -215,7 +215,7 @@
       <div class="rate-card rmb"><div class="rc-label">RMB / USD</div>
         <div class="rc-in"><input id="r_rmbUsd" class="num" type="number" step="0.01" value="6.7"><span class="unit">위안</span></div></div>
       <div class="rate-card rmb"><div class="rc-label">원화 / RMB</div>
-        <div class="rc-in"><input id="r_krwRmb" class="num" type="number" step="0.1" value="230"><span class="unit">원</span></div></div>
+        <div class="rc-in"><input id="r_krwRmb" class="num" type="number" step="0.1" value="220"><span class="unit">원</span></div></div>
       <button class="btn" id="importStateBtn" style="align-self:center;line-height:1.2;text-align:center;" title="이 앱에서 내보낸 엑셀을 올려 그때의 제품원가·공급단가·운임·환율을 복원">Excel 정보 불러오기<br><span style="font-size:10px;font-weight:600;opacity:.72;">원가·도매가·소비자가</span></button>
       <button class="btn primary" id="unifiedExportBtn" style="align-self:center;line-height:1.2;text-align:center;" title="품목별 입고원가와 그라첸 채널 공급단가를 한 시트로 내보내기">통합 단가표 내보내기<br><span style="font-size:10px;font-weight:600;opacity:.72;">원가·공급단가·소비자가</span></button>
       <input type="file" id="importStateInput" accept=".xlsx" style="display:none;">
@@ -927,7 +927,7 @@
     freight:{truckTotal:300000,truckCbm:6},
     pallet:{truckTotal:300000,palletCount:2,w:1.1,d:1.1,h:1.55,palletFee:4000}
   };}
-  var state = { rates:{krwUsd:1500, rmbUsd:6.7, krwRmb:230}, freight:DEFAULT_FREIGHT(), domestic:DEFAULT_DOMESTIC(), db:[], products:[], productsLcl:[], supply:[], supplyGrSpecial:[], supplyDsHd:[], supplyHd:[], supplyOnline:[], supplyGrCoupang:[], supplyOnJasa:[], supplyOnSmart:[], supplyOnCoupang:[], supplyOnOhouse:[], supplyOnToss:[], supplyOnGroup:[], supplyOnGroupVendor:[] };
+  var state = { rates:{krwUsd:1500, rmbUsd:6.7, krwRmb:220}, freight:DEFAULT_FREIGHT(), domestic:DEFAULT_DOMESTIC(), db:[], products:[], productsLcl:[], supply:[], supplyGrSpecial:[], supplyDsHd:[], supplyHd:[], supplyOnline:[], supplyGrCoupang:[], supplyOnJasa:[], supplyOnSmart:[], supplyOnCoupang:[], supplyOnOhouse:[], supplyOnToss:[], supplyOnGroup:[], supplyOnGroupVendor:[] };
   var uid=0; function nid(){return "r"+(++uid);}
 
   function convKRW(cur,amount){var a=n(amount),R=state.rates;
