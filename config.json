@@ -1,8 +1,8 @@
 {
   "rates": {
     "krwUsd": 1500,
-    "rmbUsd": 7.2,
-    "krwRmb": 190
+    "rmbUsd": 6.7,
+    "krwRmb": 220
   },
   "freight": {
     "activeContainer": "40HC",
