@@ -45,16 +45,16 @@
   .refc{background:rgba(24,32,43,0.06);}
   .supTable.hide-ref th.refc,.supTable.hide-ref td.refc{display:none;}
   .expc{background:rgba(20,140,120,0.07);}
-  th.expc{background:rgba(20,140,120,0.12);}
+  th.expc{background:#DFEFEB;}
   .supTable.hide-exp th.expc,.supTable.hide-exp td.expc{display:none;}
   .supTable th.gsep,.supTable td.gsep{border-left:2px solid var(--line-strong);}
   .fk{opacity:.5;font-size:10px;font-weight:800;margin-left:3px;letter-spacing:.02em;}
-  td.dsupc,th.dsupc{background:rgba(14,124,102,0.12);}
+  td.dsupc{background:rgba(14,124,102,0.12);} th.dsupc{background:#DEEDE9;}
   td.dsupc .num{color:var(--accent);font-weight:800;}
-  .supTable th.gtitle{background:rgba(24,32,43,0.05);font-size:12px;letter-spacing:.02em;text-align:center;}
+  .supTable th.gtitle{background:#F0F1F1;font-size:12px;letter-spacing:.02em;text-align:center;}
   .drag-th{width:24px;} .drag-h{cursor:grab;text-align:center;color:var(--line-strong);user-select:none;font-size:14px;width:24px;}
   .drag-h:active{cursor:grabbing;} tr.dragging{opacity:.4;} tr.drag-over td{box-shadow:inset 0 2px 0 var(--accent);}
-  th.refc{background:rgba(24,32,43,0.08);}
+  th.refc{background:#E9EAEA;}
   .panel{display:none;padding-top:20px;} .panel.active{display:block;}
 
   .toolbar{display:flex;flex-wrap:wrap;gap:9px;align-items:center;margin-bottom:12px;}
@@ -121,6 +121,8 @@
   .table-scroll thead tr:first-child th:nth-child(-n+4),
   .table-scroll tbody td:nth-child(-n+4){position:sticky;}
   .table-scroll thead th{z-index:5;}
+  .table-scroll thead tr:first-child th{top:0;z-index:7;}
+  .table-scroll thead tr:nth-child(2) th{top:var(--hdr1-h,34px);z-index:5;}
   .table-scroll thead tr:first-child th:nth-child(-n+4){z-index:6;background:#FBFCFB;}
   .table-scroll tbody td:nth-child(-n+4){z-index:4;background:var(--surface);}
   .table-scroll tbody tr:hover td:nth-child(-n+4){background:#F4F7F5;}
@@ -1235,8 +1237,28 @@
       return arr;}
     V.exportXlsx.addEventListener("click",function(){
       if(!window.XLSX){alert("Excel 라이브러리를 불러오지 못했습니다.");return;}
-      var aoa=[EX_HEAD.slice()];list().forEach(function(r){aoa.push(exRow(r));});
-      var ws=XLSX.utils.aoa_to_sheet(aoa),wb=XLSX.utils.book_new();XLSX.utils.book_append_sheet(wb,ws,"품목");XLSX.writeFile(wb,V.exportName+".xlsx");});
+      var rows=list(),aoa=[EX_HEAD.slice()];rows.forEach(function(r){aoa.push(exRow(r));});
+      var ws=XLSX.utils.aoa_to_sheet(aoa);
+      var WID={"품목코드":12.9,"품목명":54.9,"EA/CT":8.3,"CBM":9.9,"구매처명":17.9,"FOB 항구":10.9};
+      ws["!cols"]=EX_HEAD.map(function(h){return {wch:WID[h]||8.4};});
+      ws["!rows"]=aoa.map(function(r,i){return i===0?{hpt:20.1}:{hpt:15};});
+      var Z={"RMB":'0.00_ ;-0.00_ ;"-"_ ',"USD":'0.00_ ;-0.00_ ;"-"_ ',"관세":'0.0_ ;-0.0_ ;"-"_ ',"CBM":'0.#####;-0.#####;"-"',"EA/CT":'0;-0;"-"'};
+      var thin={style:"thin",color:{rgb:"9BA5B0"}},hair={style:"hair",color:{rgb:"C9D0D8"}},dbl={style:"double",color:{rgb:"9BA5B0"}};
+      var lastR=rows.length,range=XLSX.utils.decode_range(ws["!ref"]);
+      for(var R=0;R<=range.e.r;R++)for(var C=0;C<=range.e.c;C++){
+        var addr=XLSX.utils.encode_cell({r:R,c:C}),cell=ws[addr];
+        if(!cell){cell=ws[addr]={t:"s",v:""};}
+        var h=EX_HEAD[C]||"";
+        if(R===0){cell.s={font:{bold:true,sz:11},fill:{fgColor:{rgb:"D9E1F2"}},alignment:{horizontal:"center",vertical:"center"},border:{left:thin,right:thin,top:thin,bottom:dbl}};}
+        else{
+          var txt=(h==="품목코드"||h==="품목명"||h==="구매처명"||h==="FOB 항구");
+          cell.s={font:{sz:11},alignment:{horizontal:(h==="품목명"?"left":(txt||h==="EA/CT"?"center":"right")),vertical:"center"},
+                  border:{left:thin,right:thin,top:(R===1?null:hair),bottom:(R===lastR?thin:hair)}};
+          if(txt){if(cell.v===0||cell.v==null)cell.v="";cell.t="s";}
+          else{cell.z=Z[h]||'#,##0_ ;-#,##0_ ;"-"_ ';}
+        }
+      }
+      var wb=XLSX.utils.book_new();XLSX.utils.book_append_sheet(wb,ws,"품목");XLSX.writeFile(wb,V.exportName+".xlsx");});
     V.exportCsv.addEventListener("click",function(){
       if(!window.XLSX){alert("Excel 라이브러리를 불러오지 못했습니다.");return;}
       var d=new Date(),y=d.getFullYear(),mo=("0"+(d.getMonth()+1)).slice(-2),da=("0"+d.getDate()).slice(-2);
@@ -1430,6 +1452,18 @@
     var wb=XLSX.utils.book_new();XLSX.utils.book_append_sheet(wb,ws,"통합 단가표");attachState(wb);
     XLSX.writeFile(wb,ymd+"_통합 단가표.xlsx");}
   (function(){var b=document.getElementById("unifiedExportBtn");if(b)b.addEventListener("click",unifiedExport);})();
+  function syncHeaderOffsets(){
+    var boxes=document.querySelectorAll(".table-scroll");
+    for(var i=0;i<boxes.length;i++){
+      var r1=boxes[i].querySelector("thead tr:first-child");
+      if(!r1)continue;
+      var h=Math.round(r1.getBoundingClientRect().height);
+      if(h>0)boxes[i].style.setProperty("--hdr1-h",h+"px");
+    }
+  }
+  window.addEventListener("resize",syncHeaderOffsets);
+  document.addEventListener("click",function(){setTimeout(syncHeaderOffsets,0);},true);
+  setTimeout(syncHeaderOffsets,300);
   function attachState(wb){try{if(!window.XLSX)return;var js=JSON.stringify(snapshotState()),CH=30000,rs=[];for(var qi=0;qi<js.length;qi+=CH)rs.push([js.substr(qi,CH)]);if(!rs.length)rs=[[""]];var ss=XLSX.utils.aoa_to_sheet(rs);XLSX.utils.book_append_sheet(wb,ss,"_state");wb.Workbook=wb.Workbook||{};wb.Workbook.Sheets=wb.SheetNames.map(function(nm){return nm==="_state"?{Hidden:1}:{};});}catch(_){}}
   function applySnapshot(snap){if(!snap)return;applyConfig({rates:snap.rates,freight:snap.freight,domestic:snap.domestic});if(Array.isArray(snap.products))state.products=snap.products;if(Array.isArray(snap.productsLcl))state.productsLcl=snap.productsLcl;SUP_DEFS.forEach(function(d){if(Array.isArray(snap[d.key]))state[d.key]=snap[d.key];});panelFCL.render();panelLCL.render();renderSupplyAll();paintFreight();}
   function loadStateFromXlsx(file){if(!file)return;if(!window.XLSX){alert("Excel 라이브러리를 불러오지 못했습니다.");return;}var rd=new FileReader();rd.onload=function(e){try{var wb=XLSX.read(new Uint8Array(e.target.result),{type:"array"});if(wb.SheetNames.indexOf("_state")<0){alert("이 엑셀에는 저장된 설정(_state 시트)이 없습니다. 이 앱에서 내보낸 파일인지 확인하세요.");return;}var sh=wb.Sheets["_state"],ref=XLSX.utils.decode_range(sh["!ref"]),js="";for(var r=ref.s.r;r<=ref.e.r;r++){var cell=sh[XLSX.utils.encode_cell({r:r,c:0})];if(cell&&cell.v!=null)js+=String(cell.v);}var snap=JSON.parse(js);if(!confirm("현재 작업 중인 제품원가·공급단가·운임·환율을 이 엑셀에 저장된 상태로 덮어씁니다. 계속할까요?"))return;applySnapshot(snap);alert("엑셀에 저장돼 있던 설정을 불러왔습니다.\n제품원가·공급단가·운임·환율이 그때 상태로 복원되었습니다."+(snap.savedAt?("\n\n저장 시각: "+snap.savedAt.replace("T"," ").slice(0,19)):""));}catch(err){alert("불러오기 실패: "+(err&&err.message||err));}};rd.readAsArrayBuffer(file);}
