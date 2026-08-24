@@ -253,7 +253,7 @@
           <th>CBM<div class="unit-hint">박스당</div></th><th>관세율<div class="unit-hint">%</div></th>
           <th class="grp vatx">단위 원가<div class="unit-hint">개당</div></th><th class="grp">부가세 포함 원가<div class="unit-hint">개당 · ×1.1</div></th><th class="grp refc">기존원가<div class="unit-hint">데이터</div></th><th class="grp refc">증감률<div class="unit-hint">기존 대비</div></th><th class="grp vatx">원화 매입가<div class="unit-hint">개당</div></th>
           <th class="grp vatx">개당 운임<div class="unit-hint">원</div></th><th class="grp vatx">관세<div class="unit-hint">개당 · CIF</div></th>
-          <th>항구</th><th>운임종류</th><th>결제통화</th><th class="lbl">구매처</th><th>중국내륙<div class="unit-hint">ShanTou 자동</div></th><th>추가비용<div class="unit-hint">수동</div></th><th></th>
+          <th>항구</th><th>운임종류</th><th>결제통화</th><th class="lbl">구매처</th><th>중국내륙<div class="unit-hint">ShanTou 자동 · 해제 가능</div></th><th>추가비용<div class="unit-hint">수동</div></th><th></th>
         </tr></thead>
         <tbody id="tbody"></tbody>
       </table>
@@ -290,7 +290,7 @@
           <th>CBM<div class="unit-hint">박스당</div></th><th>관세율<div class="unit-hint">%</div></th>
           <th class="grp vatx">단위 원가<div class="unit-hint">개당</div></th><th class="grp">부가세 포함 원가<div class="unit-hint">개당 · ×1.1</div></th><th class="grp refc">기존원가<div class="unit-hint">데이터</div></th><th class="grp refc">증감률<div class="unit-hint">기존 대비</div></th><th class="grp vatx">원화 매입가<div class="unit-hint">개당</div></th>
           <th class="grp vatx">개당 운임<div class="unit-hint">원</div></th><th class="grp vatx">관세<div class="unit-hint">개당 · CIF</div></th>
-          <th>항구</th><th>운임종류</th><th>결제통화</th><th class="lbl">구매처</th><th>중국내륙<div class="unit-hint">ShanTou 자동</div></th><th>추가비용<div class="unit-hint">수동</div></th><th></th>
+          <th>항구</th><th>운임종류</th><th>결제통화</th><th class="lbl">구매처</th><th>중국내륙<div class="unit-hint">ShanTou 자동 · 해제 가능</div></th><th>추가비용<div class="unit-hint">수동</div></th><th></th>
         </tr></thead>
         <tbody id="tbodyL"></tbody>
       </table>
@@ -959,7 +959,8 @@
     state.productsLcl.forEach(function(p){add(p.port);});
     return list;
   }
-  function defInland(port){return (port||"")===((state.freight.inland&&state.freight.inland.autoPort)||"ShanTou");}
+  function _portKey(v){return String(v==null?"":v).toLowerCase().replace(/[^a-z0-9]/g,"");}
+  function defInland(port){var a=(state.freight.inland&&state.freight.inland.autoPort)||"ShanTou";return _portKey(port)===_portKey(a);}
   function convCost(cur,amount){var R=state.rates,a=n(amount);if(cur==="USD")return a*n(R.krwUsd);if(cur==="RMB")return n(R.rmbUsd)>0?(a/n(R.rmbUsd))*n(R.krwUsd):0;return a;}
   function normAmounts(a){var o={};CONTAINERS.forEach(function(c){o[c]=n(a&&a[c]);});return o;}
   function costOf(p,port,container){
@@ -1252,10 +1253,17 @@
         if(R===0){cell.s={font:{bold:true,sz:11},fill:{fgColor:{rgb:"D9E1F2"}},alignment:{horizontal:"center",vertical:"center"},border:{left:thin,right:thin,top:thin,bottom:dbl}};}
         else{
           var txt=(h==="품목코드"||h==="품목명"||h==="구매처명"||h==="FOB 항구");
-          cell.s={font:{sz:11},alignment:{horizontal:(h==="품목명"?"left":(txt||h==="EA/CT"?"center":"right")),vertical:"center"},
-                  border:{left:thin,right:thin,top:(R===1?null:hair),bottom:(R===lastR?thin:hair)}};
-          if(txt){if(cell.v===0||cell.v==null)cell.v="";cell.t="s";}
-          else{cell.z=Z[h]||'#,##0_ ;-#,##0_ ;"-"_ ';}
+          var al=(h==="품목명"?"left":(txt||h==="EA/CT"?"center":"right"));
+          var bdr={left:thin,right:thin,top:(R===1?null:hair),bottom:(R===lastR?thin:hair)};
+          if(txt){if(cell.v===0||cell.v==null)cell.v="";cell.t="s";
+            cell.s={font:{sz:11},alignment:{horizontal:al,vertical:"center"},border:bdr};}
+          else{
+            var nf=Z[h]||'#,##0_ ;-#,##0_ ;"-"_ ';
+            if(n(cell.v)===0){cell.t="s";cell.v="-";
+              cell.s={font:{sz:11},alignment:{horizontal:al,vertical:"center"},border:bdr};}
+            else{cell.t="n";cell.z=nf;
+              cell.s={numFmt:nf,font:{sz:11},alignment:{horizontal:al,vertical:"center"},border:bdr};}
+          }
         }
       }
       var wb=XLSX.utils.book_new();XLSX.utils.book_append_sheet(wb,ws,"품목");XLSX.writeFile(wb,V.exportName+".xlsx");});
