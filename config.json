@@ -14,7 +14,7 @@
         "40HC": 9000,
         "LCL": 0
       },
-      "autoPort": "ShanTou",
+      "autoPort": "YiWu",
       "cur": "RMB",
       "cif": true
     },
@@ -513,28 +513,41 @@
           {
             "name": "OCEAN FREIGHT",
             "cur": "KRW",
-            "amount": 108999,
-            "cif": true
+            "amount": 110000,
+            "cif": true,
+            "basis": "cbm"
           },
           {
             "name": "DOCUMENT FEE",
             "cur": "KRW",
-            "amount": 14388,
-            "cif": false
+            "amount": 20000,
+            "cif": false,
+            "basis": "fix"
           },
           {
             "name": "TRUCKING CHARGE",
             "cur": "KRW",
-            "amount": 86331,
-            "cif": false
+            "amount": 100000,
+            "cif": false,
+            "basis": "truck"
+          },
+          {
+            "name": "통관수수료",
+            "cur": "KRW",
+            "amount": 30000,
+            "cif": false,
+            "basis": "fix"
           },
           {
             "name": "HANDLING CHARGE",
             "cur": "USD",
-            "amount": 35.97,
-            "cif": false
+            "amount": 0,
+            "cif": false,
+            "basis": "fix"
           }
-        ]
+        ],
+        "truckCbm": 5,
+        "autoCbm": true
       },
       {
         "port": "",
@@ -544,28 +557,41 @@
           {
             "name": "OCEAN FREIGHT",
             "cur": "KRW",
-            "amount": 108999,
-            "cif": true
+            "amount": 110000,
+            "cif": true,
+            "basis": "cbm"
           },
           {
             "name": "DOCUMENT FEE",
             "cur": "KRW",
-            "amount": 14388,
-            "cif": false
+            "amount": 20000,
+            "cif": false,
+            "basis": "fix"
           },
           {
             "name": "TRUCKING CHARGE",
             "cur": "KRW",
-            "amount": 86331,
-            "cif": false
+            "amount": 100000,
+            "cif": false,
+            "basis": "truck"
+          },
+          {
+            "name": "통관수수료",
+            "cur": "KRW",
+            "amount": 30000,
+            "cif": false,
+            "basis": "fix"
           },
           {
             "name": "HANDLING CHARGE",
             "cur": "USD",
-            "amount": 35.97,
-            "cif": false
+            "amount": 0,
+            "cif": false,
+            "basis": "fix"
           }
-        ]
+        ],
+        "truckCbm": 5,
+        "autoCbm": true
       }
     ],
     "extra": {
