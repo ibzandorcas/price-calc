@@ -178,7 +178,7 @@
   .fitem:last-of-type{border-bottom:none;}
   .fitem .fname{flex:1;font-size:12px;color:var(--ink);border:1px solid transparent;background:transparent;font-family:inherit;padding:4px 2px;border-radius:5px;}
   .fitem .fname:focus{outline:none;border-color:var(--accent);background:#fff;}
-  .fitem .cur-sel{width:66px;}
+  .fitem .cur-sel{width:66px;} .mini-amt{width:74px;text-align:right;margin-right:6px;vertical-align:middle;} .fitem .bas-sel{width:82px;} .fhead .h-bas{width:82px;text-align:center;}
   .fitem .famt{width:112px;border:1px solid transparent;background:var(--input-bg);border-radius:6px;padding:5px 8px;
     text-align:right;font-variant-numeric:tabular-nums;font-family:ui-monospace,Menlo,monospace;font-size:12.5px;}
   .fitem .famt:focus{outline:none;border-color:var(--accent);background:#fff;}
@@ -253,7 +253,7 @@
           <th>CBM<div class="unit-hint">박스당</div></th><th>관세율<div class="unit-hint">%</div></th>
           <th class="grp vatx">단위 원가<div class="unit-hint">개당</div></th><th class="grp">부가세 포함 원가<div class="unit-hint">개당 · ×1.1</div></th><th class="grp refc">기존원가<div class="unit-hint">데이터</div></th><th class="grp refc">증감률<div class="unit-hint">기존 대비</div></th><th class="grp vatx">원화 매입가<div class="unit-hint">개당</div></th>
           <th class="grp vatx">개당 운임<div class="unit-hint">원</div></th><th class="grp vatx">관세<div class="unit-hint">개당 · CIF</div></th>
-          <th>항구</th><th>운임종류</th><th>결제통화</th><th class="lbl">구매처</th><th>중국내륙<div class="unit-hint">ShanTou 자동 · 해제 가능</div></th><th>추가비용<div class="unit-hint">수동</div></th><th></th>
+          <th>항구</th><th>운임종류</th><th>결제통화</th><th class="lbl">구매처</th><th>중국내륙<div class="unit-hint">YiWu 자동 · 해제 가능</div></th><th>추가비용<div class="unit-hint">수동</div></th><th></th>
         </tr></thead>
         <tbody id="tbody"></tbody>
       </table>
@@ -290,7 +290,7 @@
           <th>CBM<div class="unit-hint">박스당</div></th><th>관세율<div class="unit-hint">%</div></th>
           <th class="grp vatx">단위 원가<div class="unit-hint">개당</div></th><th class="grp">부가세 포함 원가<div class="unit-hint">개당 · ×1.1</div></th><th class="grp refc">기존원가<div class="unit-hint">데이터</div></th><th class="grp refc">증감률<div class="unit-hint">기존 대비</div></th><th class="grp vatx">원화 매입가<div class="unit-hint">개당</div></th>
           <th class="grp vatx">개당 운임<div class="unit-hint">원</div></th><th class="grp vatx">관세<div class="unit-hint">개당 · CIF</div></th>
-          <th>항구</th><th>운임종류</th><th>결제통화</th><th class="lbl">구매처</th><th>중국내륙<div class="unit-hint">ShanTou 자동 · 해제 가능</div></th><th>추가비용<div class="unit-hint">수동</div></th><th></th>
+          <th>항구</th><th>운임종류</th><th>결제통화</th><th class="lbl">구매처</th><th>중국내륙<div class="unit-hint">RMB 총액 직접입력 · 체크 시 기본값</div></th><th>추가비용<div class="unit-hint">총액 직접입력 · 체크 시 기본값</div></th><th></th>
         </tr></thead>
         <tbody id="tbodyL"></tbody>
       </table>
@@ -969,6 +969,7 @@
   function won(v){return Math.round(v).toLocaleString("ko-KR")+"원\u2009";}
   function clone(o){return JSON.parse(JSON.stringify(o));}
   function I(name,cur,amount,cif){return {name:name,cur:cur,amount:amount,cif:!!cif};}
+  function B(it,basis){it.basis=basis;return it;}
   function P(port,container,cbm,items){return {port:port,container:container,totalCbm:cbm,items:items};}
   var CONTAINERS=["20FT","40FT","40HC","LCL"];
 
@@ -994,11 +995,12 @@
       I("WHARFAGE","KRW",4200,0),I("PORT FACILITY SECURITY","KRW",86,0),I("PORT SAFETY MANAGEMENT CHARGE","KRW",259,0),
       I("LSS CHARGE","USD",200,1),I("PEAK SEASON SURCHARGE","USD",100,1),I("HANDLING CHARGE","USD",50,0),I("국내 운송료/그라첸","KRW",339800,0)]);
     var wei=P("WeiHai","LCL",1,[
-      I("OCEAN FREIGHT","KRW",108999,1),I("DOCUMENT FEE","KRW",14388,0),I("TRUCKING CHARGE","KRW",86331,0),I("HANDLING CHARGE","USD",35.97,0)]);
+      B(I("OCEAN FREIGHT","KRW",110000,1),"cbm"),B(I("DOCUMENT FEE","KRW",20000,0),"fix"),B(I("TRUCKING CHARGE","KRW",100000,0),"truck"),B(I("통관수수료","KRW",30000,0),"fix"),B(I("HANDLING CHARGE","USD",0,0),"fix")]);
+    wei.truckCbm=5;
     var d40=clone(shen);d40.port="";
     var d20=clone(yan);d20.port="";
     var dlcl=clone(wei);dlcl.port="";
-    return {activeContainer:"40HC", editingPort:"ShenZhen", inland:{amounts:{"20FT":7000,"40FT":9000,"40HC":9000,"LCL":0},autoPort:"ShanTou",cur:"RMB",cif:true}, extra:{name:"추가비용",amounts:{"20FT":0,"40FT":0,"40HC":0,"LCL":0},cur:"RMB",cif:false},
+    return {activeContainer:"40HC", editingPort:"ShenZhen", inland:{amounts:{"20FT":7000,"40FT":9000,"40HC":9000,"LCL":0},autoPort:"YiWu",cur:"RMB",cif:true}, extra:{name:"추가비용",amounts:{"20FT":0,"40FT":0,"40HC":0,"LCL":0},cur:"RMB",cif:false},
       profiles:[shen,shan,d40, ning,yan,d20, wei,dlcl]};
   }
 
@@ -1027,11 +1029,45 @@
     if(list.length===0){state.freight.profiles.push(P("",state.freight.activeContainer,30,[]));list=[""];}
     if(list.indexOf(state.freight.editingPort)<0)state.freight.editingPort=list[0];}
   function editP(){return findProfile(state.freight.editingPort,state.freight.activeContainer);}
+  function truckCbmOf(pf){var t=n(pf&&pf.truckCbm);return t>0?t:5;}
+  function lclShipCbm(){
+    var sum=0;
+    (state.productsLcl||[]).forEach(function(p){
+      var ea=n(p.eaCt),puc=ea>0?n(p.cbm)/ea:n(p.cbm),q=n(p.qty);
+      if(q>0&&puc>0)sum+=q*puc;});
+    return sum;
+  }
+  function lclShipQty(){var sum=0;(state.productsLcl||[]).forEach(function(p){var q=n(p.qty);if(q>0)sum+=q;});return sum;}
+  function shipQtyOf(pf){
+    if(pf&&pf.autoQty===false){var m=n(pf.totalQty);if(m>0)return m;}
+    var a=lclShipQty();if(a>0)return a;
+    return n(pf&&pf.totalQty);
+  }
+  function shipCbmOf(pf){
+    if(pf&&pf.container==="LCL"&&pf.autoCbm!==false){var a=lclShipCbm();if(a>0)return a;}
+    return n(pf&&pf.totalCbm);
+  }
+  function itemPerCbm(pf,it,isL){
+    var v=convKRW(it.cur,it.amount),cbm=isL?shipCbmOf(pf):n(pf.totalCbm);
+    if(!isL)return cbm>0?v/cbm:0;
+    var b=it.basis||"cbm";
+    if(b==="fix")return 0;
+    if(b==="truck"){var tc=truckCbmOf(pf),ship=shipCbmOf(pf);
+      if(tc<=0)return 0;
+      if(ship<=0)return v/tc;
+      return (v*Math.ceil(ship/tc))/ship;}
+    return v;
+  }
   function fPerCbm(pf){
-    if(!pf)return {total:0,cif:0,sum:0,cifSum:0};
-    var cbm=n(pf.totalCbm),sum=0,cifSum=0;
-    (pf.items||[]).forEach(function(it){var v=convKRW(it.cur,it.amount);sum+=v;if(it.cif)cifSum+=v;});
-    return {sum:sum,cifSum:cifSum,total:cbm>0?sum/cbm:0,cif:cbm>0?cifSum/cbm:0};
+    if(!pf)return {total:0,cif:0,sum:0,cifSum:0,perUnit:0,perUnitCif:0,fixSum:0};
+    var isL=(pf.container==="LCL"),sum=0,cifSum=0,per=0,perCif=0,unit=0,unitCif=0,fixSum=0;
+    var q=isL?shipQtyOf(pf):0;
+    (pf.items||[]).forEach(function(it){
+      var v=convKRW(it.cur,it.amount);sum+=v;if(it.cif)cifSum+=v;
+      if(isL&&(it.basis||"cbm")==="fix"){
+        fixSum+=v;var uv=q>0?v/q:0;unit+=uv;if(it.cif)unitCif+=uv;return;}
+      var pv=itemPerCbm(pf,it,isL);per+=pv;if(it.cif)perCif+=pv;});
+    return {sum:sum,cifSum:cifSum,total:per,cif:perCif,perUnit:unit,perUnitCif:unitCif,fixSum:fixSum};
   }
 
   function availablePorts(){
@@ -1078,9 +1114,15 @@
     var isLcl=(cont==="LCL");
     var freightProfile, cifFreight, inlandUnit=0, extraUnit=0;
     if(isLcl){
-      freightProfile=perUnitCbm*f.total; cifFreight=perUnitCbm*f.cif;
-      if(pf&&p.inland){var ik=convCost(state.freight.inland.cur||"RMB",(state.freight.inland.amounts||{})[cont]);var pc=n(pf.totalCbm);inlandUnit=pc>0?perUnitCbm*(ik/pc):0;}
-      if(pf&&p.extra){var ek=convCost(state.freight.extra.cur||"RMB",(state.freight.extra.amounts||{})[cont]);var pc2=n(pf.totalCbm);extraUnit=pc2>0?perUnitCbm*(ek/pc2):0;}
+      freightProfile=perUnitCbm*f.total+n(f.perUnit); cifFreight=perUnitCbm*f.cif+n(f.perUnitCif);
+      if(p.inland){
+        var manual=(p.inlandRmb!=null&&p.inlandRmb!=="")?n(p.inlandRmb):null;
+        var ik=(manual!=null)?convCost("RMB",manual):(pf?convCost(state.freight.inland.cur||"RMB",(state.freight.inland.amounts||{})[cont]):0);
+        inlandUnit=qty>0?ik/qty:0;}
+      if(p.extra){
+        var em=(p.extraAmt!=null&&p.extraAmt!=="")?n(p.extraAmt):null;
+        if(em!=null){var ekm=convCost(state.freight.extra.cur||"RMB",em);extraUnit=qty>0?ekm/qty:0;}
+        else if(pf){var ek=convCost(state.freight.extra.cur||"RMB",(state.freight.extra.amounts||{})[cont]);var pc2=n(pf.totalCbm);extraUnit=pc2>0?perUnitCbm*(ek/pc2):0;}}
     } else {
       freightProfile=pf?f.sum/qty:0; cifFreight=pf?f.cifSum/qty:0;
       if(pf&&p.inland){var ik2=convCost(state.freight.inland.cur||"RMB",(state.freight.inland.amounts||{})[cont]);inlandUnit=ik2/qty;}
@@ -1143,8 +1185,26 @@
       var contSel=document.createElement("select");contSel.className="cur-sel cont-sel";
       CONTAINERS.forEach(function(c){var o=document.createElement("option");o.value=c;o.textContent=c;if((row.container||"40HC")===c)o.selected=true;contSel.appendChild(o);});
       contSel.addEventListener("change",function(){row.container=contSel.value;paintRow(row);updateWarn();});
-      var inTd=document.createElement("td");inTd.style.textAlign="center";var inCb=document.createElement("input");inCb.type="checkbox";inCb.className="row-inland";inCb.checked=!!row.inland;inCb.title="중국 내륙운송비 반영";inCb.addEventListener("change",function(){row.inland=inCb.checked;paintRow(row);});inTd.appendChild(inCb);
-      var exTd=document.createElement("td");exTd.style.textAlign="center";var exCb=document.createElement("input");exCb.type="checkbox";exCb.className="row-inland";exCb.checked=!!row.extra;exCb.title="추가비용 반영";exCb.addEventListener("change",function(){row.extra=exCb.checked;paintRow(row);});exTd.appendChild(exCb);
+      var inTd=document.createElement("td");inTd.style.cssText="text-align:center;white-space:nowrap;";
+      var inCb=document.createElement("input");inCb.type="checkbox";inCb.className="row-inland";inCb.checked=!!row.inland;inCb.title="중국 내륙운송비 반영 — 직접입력이 비어 있으면 운임설정 기본값을 씁니다.";inCb.addEventListener("change",function(){row.inland=inCb.checked;paintRow(row);});
+      if(V.useQty){
+        var inAmt=document.createElement("input");inAmt.type="number";inAmt.step="0.01";inAmt.min="0";inAmt.className="cell-in mini-amt";
+        inAmt.placeholder="RMB";inAmt.title="중국 내륙운송비 총액(RMB) 직접입력 — 비우면 운임설정 기본값. 원화 환산 후 매입수량으로 나눠 개당 원가에 더합니다.";
+        inAmt.value=(row.inlandRmb!=null&&row.inlandRmb!=="")?row.inlandRmb:"";
+        inAmt.addEventListener("change",function(){row.inlandRmb=(inAmt.value===""?null:n(inAmt.value));if(n(inAmt.value)>0&&!row.inland){row.inland=true;inCb.checked=true;}paintRow(row);});
+        inTd.appendChild(inAmt);
+      }
+      inTd.appendChild(inCb);
+      var exTd=document.createElement("td");exTd.style.cssText="text-align:center;white-space:nowrap;";
+      var exCb=document.createElement("input");exCb.type="checkbox";exCb.className="row-inland";exCb.checked=!!row.extra;exCb.title="추가비용 반영 — 직접입력이 비어 있으면 운임설정 기본값을 씁니다.";exCb.addEventListener("change",function(){row.extra=exCb.checked;paintRow(row);});
+      if(V.useQty){
+        var exAmt=document.createElement("input");exAmt.type="number";exAmt.step="0.01";exAmt.min="0";exAmt.className="cell-in mini-amt";
+        exAmt.placeholder=(state.freight.extra.cur||"RMB");exAmt.title="추가비용 총액 직접입력("+(state.freight.extra.cur||"RMB")+") — 비우면 운임설정 기본값. 원화 환산 후 매입수량으로 나눠 개당 원가에 더합니다.";
+        exAmt.value=(row.extraAmt!=null&&row.extraAmt!=="")?row.extraAmt:"";
+        exAmt.addEventListener("change",function(){row.extraAmt=(exAmt.value===""?null:n(exAmt.value));if(n(exAmt.value)>0&&!row.extra){row.extra=true;exCb.checked=true;}paintRow(row);});
+        exTd.appendChild(exAmt);
+      }
+      exTd.appendChild(exCb);
       var portSel=document.createElement("select");portSel.className="cur-sel port-sel";
       availablePorts().forEach(function(pt){var o=document.createElement("option");o.value=pt;o.textContent=pt===""?"(기본)":pt;if((row.port||"")===pt)o.selected=true;portSel.appendChild(o);});
       portSel.addEventListener("change",function(){row.port=portSel.value;row.container=defContainer(row.port);contSel.value=row.container;row.inland=defInland(row.port);inCb.checked=row.inland;paintRow(row);updateWarn();});
@@ -1189,12 +1249,12 @@
       if(miss>0){V.warnEl.style.display="block";V.warnEl.textContent="⚠ "+miss+"개 품목은 선택한 항구·운임종류 조합에 맞는 운임이 없어 운임 0으로 계산됩니다. 운임 설정 탭에서 해당 조건을 추가하세요.";}
       else V.warnEl.style.display="none";
     }
-    function applyView(o){ if(V.defCont){o.container=V.defCont;if(V.defPort!=null)o.port=V.defPort;} o.inland=defInland(o.port); if(V.useQty&&!o.qty)o.qty=1000; return o; }
+    function applyView(o){ if(V.defCont){o.container=V.defCont;if(V.defPort!=null)o.port=V.defPort;} if(V.defCur)o.cur=V.defCur; o.inland=defInland(o.port); if(V.useQty&&!o.qty)o.qty=1000; return o; }
     function addToList(found,port,container){
       if(!found)return;
       var dup=false;list().forEach(function(p){if((found.code||"")!==""&&(p.code||"")===(found.code||""))dup=true;});
       if(!dup){var o={id:nid()};for(var k in found){if(k!=="id")o[k]=found[k];}
-        if(port!=null)o.port=port;if(container!=null)o.container=container;o.inland=defInland(o.port);if(V.useQty)o.qty=V.lookup.qty||1000;list().push(o);}
+        if(port!=null)o.port=port;if(container!=null)o.container=container;if(V.defCont){o.container=V.defCont;if(V.defPort!=null)o.port=V.defPort;}if(V.defCur)o.cur=V.defCur;o.inland=defInland(o.port);if(V.useQty)o.qty=V.lookup.qty||1000;list().push(o);}
       render();
     }
     function renderLookup(){
@@ -1235,7 +1295,10 @@
       lines.appendChild(line("원화 매입가",buyExpr,c.krwUnit));
       var frExpr = (c.mode==="qty") ? ("컨테이너 운임 "+won(c.containerSum)+" ÷ "+fmtNum(c.qty)+"개") : (fmtNum(c.perUnitCbm,5)+" CBM × "+fmtNum(c.perCbm)+"/CBM");
       lines.appendChild(line("개당 운임",frExpr+" · "+(port===""?"(기본)":port)+"·"+container,c.freightProfile));
-      if(c.inlandUnit>0){var iexpr=(c.mode==="qty")?(fmtNum((state.freight.inland.amounts||{})[container]||0)+" RMB ÷ RMB/USD × 원화/USD ÷ "+fmtNum(c.qty)+"개"):(fmtNum((state.freight.inland.amounts||{})[container]||0)+" RMB ÷ RMB/USD × 원화/USD ÷ CBM");lines.appendChild(line("중국내륙운송",iexpr,c.inlandUnit));}
+      if(c.inlandUnit>0){var _im=(p.inlandRmb!=null&&p.inlandRmb!=="")?n(p.inlandRmb):null;
+        var _ia=(_im!=null)?_im:((state.freight.inland.amounts||{})[container]||0);
+        var iexpr=(c.mode==="qty")?(fmtNum(_ia)+" RMB"+(_im!=null?"(직접입력)":"")+" ÷ RMB/USD × 원화/USD ÷ "+fmtNum(c.qty)+"개"):(fmtNum(_ia)+" RMB ÷ RMB/USD × 원화/USD ÷ CBM");
+        lines.appendChild(line("중국내륙운송",iexpr,c.inlandUnit));}
       if(c.extraUnit>0){var eexpr=(c.mode==="qty")?(fmtNum((state.freight.extra.amounts||{})[container]||0)+" "+(state.freight.extra.cur||"RMB")+" ÷ "+fmtNum(c.qty)+"개"):(fmtNum((state.freight.extra.amounts||{})[container]||0)+" "+(state.freight.extra.cur||"RMB")+" ÷ CBM");lines.appendChild(line(state.freight.extra.name||"추가비용",eexpr,c.extraUnit));}
       lines.appendChild(line("관세", n(found.dutyRate)>0 ? (fmtNum(n(found.dutyRate),1)+"% × CIF "+won(c.cif)) : "관세율 0 · 관세 없음", c.duty));
       res.appendChild(lines);
@@ -1406,7 +1469,7 @@
     tbody:document.getElementById("tbody"),codeEl:document.getElementById("lookupCode"),sgBox:document.getElementById("lkSuggest"),resultEl:document.getElementById("lookupResult"),warnEl:document.getElementById("warnBar"),countEl:document.getElementById("prodCount"),
     addBtn:document.getElementById("addRow"),importBtn:document.getElementById("importBtn"),importFile:document.getElementById("importFile"),exportCsv:document.getElementById("exportCsv"),exportXlsx:document.getElementById("exportXlsx"),sendBtn:document.getElementById("toSupply"),delBtn:document.getElementById("delPicked"),
     lookup:{foundCode:null,port:null,container:null},sg:{list:[],active:-1,selected:{},countEl:null}};
-  var LCL={key:"productsLcl",defCont:null,defPort:null,exportName:"data_lcl",cost:costOfLcl,useQty:true,
+  var LCL={key:"productsLcl",defCont:"LCL",defPort:"WeiHai",defCur:"USD",exportName:"data_lcl",cost:costOfLcl,useQty:true,
     tbody:document.getElementById("tbodyL"),codeEl:document.getElementById("lookupCodeL"),sgBox:document.getElementById("lkSuggestL"),resultEl:document.getElementById("lookupResultL"),warnEl:document.getElementById("warnBarL"),countEl:document.getElementById("prodCountL"),
     addBtn:document.getElementById("addRowL"),importBtn:document.getElementById("importBtnL"),importFile:document.getElementById("importFileL"),exportCsv:document.getElementById("exportCsvL"),exportXlsx:document.getElementById("exportXlsxL"),sendBtn:document.getElementById("toSupplyL"),delBtn:document.getElementById("delPickedL"),
     lookup:{foundCode:null,port:null,container:null},sg:{list:[],active:-1,selected:{},countEl:null}};
@@ -2015,13 +2078,20 @@
     sel.addEventListener("change",function(){it.cur=sel.value;paintFreight();});
     var amt=document.createElement("input");amt.className="famt num";amt.type="number";amt.step="0.01";amt.min="0";amt.value=it.amount;
     amt.addEventListener("change",function(){it.amount=amt.value;paintFreight();});
+    var bas=null;
+    if(pf.container==="LCL"){
+      bas=document.createElement("select");bas.className="bas-sel";
+      bas.title="부과 기준 — CBM당: 금액이 1CBM 단가 / 건당(수량): 선적 1건 고정비를 총 매입수량으로 나눠 개당 균등 분배 / 차량당: 1톤 차량 요금(대수 올림)을 총 CBM으로 분배";
+      [["cbm","CBM당"],["fix","건당(수량)"],["truck","차량당"]].forEach(function(o){var op=document.createElement("option");op.value=o[0];op.textContent=o[1];if((it.basis||"cbm")===o[0])op.selected=true;bas.appendChild(op);});
+      bas.addEventListener("change",function(){it.basis=bas.value;paintFreight();});
+    }
     var cifWrap=document.createElement("label");cifWrap.className="cifbox";cifWrap.title="CIF 과세가격(관세 기준)에 포함";
     var cb=document.createElement("input");cb.type="checkbox";cb.checked=!!it.cif;
     cb.addEventListener("change",function(){it.cif=cb.checked;paintFreight();});
     cifWrap.appendChild(cb);
     var rm=document.createElement("button");rm.className="frm";rm.textContent="×";rm.title="삭제";
     rm.addEventListener("click",function(){pf.items=pf.items.filter(function(x){return x!==it;});row.remove();paintFreight();});
-    row.appendChild(nm);row.appendChild(sel);row.appendChild(amt);row.appendChild(cifWrap);row.appendChild(rm);
+    row.appendChild(nm);row.appendChild(sel);row.appendChild(amt);if(bas)row.appendChild(bas);row.appendChild(cifWrap);row.appendChild(rm);
     return row;
   }
   function res(host,label){var d=document.createElement("div");d.className="fresult";
@@ -2031,23 +2101,47 @@
     ensureEditing();var pf=editP(),host=document.getElementById("freightEditor");host.innerHTML="";ed={};
     if(!pf){host.textContent="운임 프로파일이 없습니다. '+ 항구'로 추가하세요.";return;}
     var bar=document.createElement("div");bar.className="cbm-bar";
-    var bl=document.createElement("label");bl.textContent="이 조건의 총 CBM (인보이스 MEASUREMENT)";
-    var bi=document.createElement("input");bi.type="number";bi.step="0.01";bi.min="0";bi.value=pf.totalCbm;
+    var isL=(pf.container==="LCL");
+    var bl=document.createElement("label");bl.textContent=isL?"이번 선적의 총 CBM":"이 조건의 총 CBM (인보이스 MEASUREMENT)";
+    var bi=document.createElement("input");bi.type="number";bi.step="0.01";bi.min="0";bi.value=isL?(Math.round(shipCbmOf(pf)*10000)/10000):pf.totalCbm;
     bi.addEventListener("change",function(){pf.totalCbm=bi.value;paintFreight();});
+    if(isL){
+      if(pf.autoCbm===undefined)pf.autoCbm=true;
+      var al=document.createElement("label");al.style.cssText="display:inline-flex;align-items:center;gap:6px;cursor:pointer;margin-left:8px;";
+      var ac=document.createElement("input");ac.type="checkbox";ac.checked=(pf.autoCbm!==false);ac.style.cssText="width:15px;height:15px;accent-color:var(--accent);";
+      al.appendChild(ac);al.appendChild(document.createTextNode("자동(품목 수량×개당 CBM 합계)"));
+      var cbmInp=bi;
+      function syncAuto(){if(!cbmInp)return;var on=(pf.autoCbm!==false);cbmInp.disabled=on;cbmInp.style.opacity=on?"0.55":"";if(on)cbmInp.value=Math.round(shipCbmOf(pf)*10000)/10000;}
+      ac.addEventListener("change",function(){pf.autoCbm=ac.checked;syncAuto();paintFreight();});
+      syncAuto();ed.cbmInput=bi;ed.cbmSync=syncAuto;
+      bar.appendChild(bl);bar.appendChild(bi);bar.appendChild(al);
+      bl=null;bi=null;
+    }
     var bh=document.createElement("span");bh.style.cssText="font-size:12px;color:var(--muted);";
-    bh.textContent=state.freight.activeContainer+" · "+(pf.port===""?"(기본)":pf.port)+" 운임을 이 CBM으로 나눠 CBM당 단가로 환산합니다.";
-    bar.appendChild(bl);bar.appendChild(bi);bar.appendChild(bh);host.appendChild(bar);
+    bh.textContent=isL?"'CBM당'·'차량당' 기준 항목의 배분 기준입니다. 자동을 켜면 제품원가(LCL) 목록의 수량×개당 CBM 합계를 씁니다.":(state.freight.activeContainer+" · "+(pf.port===""?"(기본)":pf.port)+" 운임을 이 CBM으로 나눠 CBM당 단가로 환산합니다.");
+    if(bl)bar.appendChild(bl);if(bi)bar.appendChild(bi);bar.appendChild(bh);
+    if(isL){
+      var tl=document.createElement("label");tl.textContent="1톤 차량 적재 CBM";tl.style.marginLeft="18px";
+      var ti=document.createElement("input");ti.type="number";ti.step="0.1";ti.min="0";ti.value=truckCbmOf(pf);
+      ti.addEventListener("change",function(){pf.truckCbm=n(ti.value);paintFreight();});
+      var th=document.createElement("span");th.style.cssText="font-size:12px;color:var(--muted);";
+      th.textContent="'차량당' 기준 항목(트럭킹 차지)을 이 적재량으로 나눕니다.";
+      bar.appendChild(tl);bar.appendChild(ti);bar.appendChild(th);
+    }
+    host.appendChild(bar);
 
     var card=document.createElement("div");card.className="fcard";
-    card.innerHTML='<h3>운임 항목</h3><p class="sub">인보이스 항목을 그대로 넣으세요. 통화는 항목별로 KRW·USD·RMB 선택. USD·RMB는 상단 환율로 환산됩니다. CIF = 관세 과세가격 포함 여부.</p>';
+    card.innerHTML='<h3>운임 항목</h3><p class="sub">인보이스 항목을 그대로 넣으세요. 통화는 항목별로 KRW·USD·RMB 선택. USD·RMB는 상단 환율로 환산됩니다. CIF = 관세 과세가격 포함 여부.'+(pf.container==="LCL"?' <b>기준</b> — <b>CBM당</b>: 금액이 이미 1CBM 단가(해상운임). <b>건당(수량)</b>: 선적 1건당 고정비를 <b>총 매입수량</b>으로 나눠 개당 균등 분배(통관수수료·서류비·핸들링). <b>차량당</b>: 1톤 차량 요금을 대수 올림 계산 후 총 CBM으로 분배(트럭킹 차지).':'')+'</p>';
     var head=document.createElement("div");head.className="fhead";
-    head.innerHTML='<span class="h-name">항목</span><span class="h-cur">통화</span><span class="h-amt">금액</span><span class="h-cif">CIF</span><span class="h-x"></span>';
+    head.innerHTML='<span class="h-name">항목</span><span class="h-cur">통화</span><span class="h-amt">금액</span>'+(pf.container==="LCL"?'<span class="h-bas">기준</span>':'')+'<span class="h-cif">CIF</span><span class="h-x"></span>';
     card.appendChild(head);
     var list=document.createElement("div");(pf.items||[]).forEach(function(it){list.appendChild(makeItem(pf,it));});card.appendChild(list);
     var addb=document.createElement("button");addb.className="btn add-item";addb.textContent="+ 항목 추가";
-    addb.addEventListener("click",function(){var it={name:"새 항목",cur:"KRW",amount:0,cif:false};pf.items.push(it);list.appendChild(makeItem(pf,it));paintFreight();});
+    addb.addEventListener("click",function(){var it={name:"새 항목",cur:"KRW",amount:0,cif:false,basis:"cbm"};pf.items.push(it);list.appendChild(makeItem(pf,it));paintFreight();});
     card.appendChild(addb);
     ed.sum=res(card,"항목 합계 (원화 환산)");ed.perCbm=res(card,"해상운임 CBM당 (원화)");
+    if(isL){ed.truckInfo=res(card,"차량당 항목 — 필요 대수 / 실제 총액");
+      ed.fixInfo=res(card,"건당(수량) 항목 — 총액 / 총수량 / 개당");}
     host.appendChild(card);
 
     var sumCard=document.createElement("div");sumCard.className="fcard";sumCard.style.borderTopColor="var(--ink)";sumCard.style.marginTop="18px";
@@ -2069,12 +2163,20 @@
   }
   function paintFreight(){
     var pf=editP();if(!pf)return;var f=fPerCbm(pf);
-    var cont=pf.container, T=n(pf.totalCbm);
+    var cont=pf.container, T=shipCbmOf(pf);
+    if(ed.cbmSync){try{ed.cbmSync();}catch(_){ed.cbmSync=null;}}
     var inlandConv=convCost(state.freight.inland.cur||"RMB",(state.freight.inland.amounts||{})[cont]);
     var extraConv=convCost(state.freight.extra.cur||"RMB",(state.freight.extra.amounts||{})[cont]);
     var inlandPerCbm=T>0?inlandConv/T:0, extraPerCbm=T>0?extraConv/T:0;
     var grand=f.total+inlandPerCbm+extraPerCbm;
     var grandCif=f.cif+(state.freight.inland.cif?inlandPerCbm:0)+(state.freight.extra.cif?extraPerCbm:0);
+    if(ed.truckInfo){
+      var tc=truckCbmOf(pf),ship=T,units=(tc>0&&ship>0)?Math.ceil(ship/tc):0,tsum=0;
+      (pf.items||[]).forEach(function(it){if((it.basis||"cbm")==="truck")tsum+=convKRW(it.cur,it.amount);});
+      ed.truckInfo.textContent=units>0?(units+"대 · "+won(tsum*units)):"–";
+    }
+    if(ed.fixInfo){var q=shipQtyOf(pf);
+      ed.fixInfo.textContent=q>0?(won(f.fixSum)+" / "+Math.round(q).toLocaleString("ko-KR")+"개 / "+won(f.perUnit)):"–";}
     if(ed.sum)ed.sum.textContent=won(f.sum);
     if(ed.perCbm)ed.perCbm.textContent=won(f.total);
     if(ed.sea)ed.sea.textContent=won(f.total);
@@ -2087,9 +2189,9 @@
   }
 
   /* ===== container/port controls ===== */
-  function amountInputs(amountsObj){
+  function amountInputs(amountsObj,only){
     var wrap=document.createElement("div");wrap.style.cssText="display:flex;gap:14px;flex-wrap:wrap;align-items:center;";
-    CONTAINERS.forEach(function(c){
+    (only||CONTAINERS).forEach(function(c){
       var lab=document.createElement("label");lab.style.cssText="font-size:12px;font-weight:700;color:var(--muted);display:flex;align-items:center;gap:6px;";
       lab.appendChild(document.createTextNode(c));
       var inp=document.createElement("input");inp.type="number";inp.step="1";inp.min="0";inp.value=(amountsObj[c]!=null?amountsObj[c]:0);
@@ -2109,12 +2211,13 @@
     var host=document.getElementById("inlandCard");
     if(host){host.innerHTML="";
       var h=document.createElement("h3");h.innerHTML='중국 내륙운송비 <span class="tag rmb">RMB</span>';host.appendChild(h);
-      var sub=document.createElement("p");sub.className="sub";sub.textContent="지정 항구 품목에 자동 반영. RMB→USD→원화(원화/USD)로 환산 후 CBM으로 나눠 개당 원가에 더합니다. 리스트의 '중국내륙' 체크로 켜고 끌 수 있어요.";host.appendChild(sub);
-      host.appendChild(amountInputs(state.freight.inland.amounts));
+      var sub=document.createElement("p");sub.className="sub";sub.textContent=(state.freight.activeContainer==="LCL")?"지정 항구 품목에 자동 반영. RMB→USD→원화(원화/USD)로 환산 후 매입 수량으로 나눠 개당 원가에 더합니다. 리스트의 '중국내륙' 체크로 켜고 끌 수 있어요.":"지정 항구 품목에 자동 반영. RMB→USD→원화(원화/USD)로 환산 후 총 발주수량으로 나눠 개당 원가에 더합니다. 리스트의 '중국내륙' 체크로 켜고 끌 수 있어요.";host.appendChild(sub);
+      host.appendChild(amountInputs(state.freight.inland.amounts,state.freight.activeContainer==="LCL"?["LCL"]:null));
       var l2=document.createElement("label");l2.style.cssText="font-size:12px;font-weight:700;color:var(--muted);display:flex;align-items:center;gap:8px;margin-top:12px;";
       l2.appendChild(document.createTextNode("자동 적용 항구"));
       var sel=document.createElement("select");sel.style.cssText="border:1px solid var(--line-strong);border-radius:8px;padding:6px 10px;font:inherit;font-weight:700;background:#fff;cursor:pointer;";
       var ports=availablePorts().filter(function(p){return p!=="";});
+      ["YiWu"].forEach(function(x){if(ports.indexOf(x)<0)ports.push(x);});
       if(ports.indexOf(state.freight.inland.autoPort)<0)ports.push(state.freight.inland.autoPort);
       ports.forEach(function(pt){var o=document.createElement("option");o.value=pt;o.textContent=pt;if(pt===state.freight.inland.autoPort)o.selected=true;sel.appendChild(o);});
       sel.addEventListener("change",function(){state.freight.inland.autoPort=sel.value;[state.products,state.productsLcl].forEach(function(L){L.forEach(function(p){p.inland=defInland(p.port);});});panelFCL.render();panelLCL.render();});
@@ -2210,7 +2313,7 @@
       var o=document.createElement("option");o.value=port;o.textContent=port===""?"(항구 미지정 · 기본)":port;
       if(port===state.freight.editingPort)o.selected=true;sel.appendChild(o);});
   }
-  function switchContainer(c){state.freight.activeContainer=c;ensureEditing();renderContainerSeg();renderPortSelect();renderFreightEditor();}
+  function switchContainer(c){state.freight.activeContainer=c;ensureEditing();renderContainerSeg();renderPortSelect();renderFreightEditor();renderCostCards();}
   document.getElementById("portSelect").addEventListener("change",function(){state.freight.editingPort=this.value;renderFreightEditor();});
   document.getElementById("addPort").addEventListener("click",function(){
     var name=window.prompt("추가할 항구 이름 (예: 칭다오(Qingdao))","");if(name==null)return;name=name.trim();
@@ -2381,7 +2484,7 @@
         extra:{name:_ext.name||"추가비용",amounts:normAmounts(_ext.amounts),cur:_ext.cur||"RMB",cif:!!_ext.cif},
         profiles:cfg.freight.profiles.map(migrateProfile)};
     } else if(cfg.totalCbm!=null||cfg.korea){
-      state.freight={activeContainer:"40FT",editingPort:"",inland:{amounts:{"20FT":7000,"40FT":9000,"40HC":9000,"LCL":0},autoPort:"ShanTou",cur:"RMB",cif:true},extra:{name:"추가비용",amounts:{"20FT":0,"40FT":0,"40HC":0,"LCL":0},cur:"RMB",cif:false},profiles:[migrateProfile({port:"",container:"40FT",totalCbm:cfg.totalCbm,chinaRmb:cfg.chinaRmb,chinaCif:cfg.chinaCif,korea:cfg.korea})]};
+      state.freight={activeContainer:"40FT",editingPort:"",inland:{amounts:{"20FT":7000,"40FT":9000,"40HC":9000,"LCL":0},autoPort:"YiWu",cur:"RMB",cif:true},extra:{name:"추가비용",amounts:{"20FT":0,"40FT":0,"40HC":0,"LCL":0},cur:"RMB",cif:false},profiles:[migrateProfile({port:"",container:"40FT",totalCbm:cfg.totalCbm,chinaRmb:cfg.chinaRmb,chinaCif:cfg.chinaCif,korea:cfg.korea})]};
     }
     document.getElementById("r_krwUsd").value=state.rates.krwUsd;
     document.getElementById("r_rmbUsd").value=state.rates.rmbUsd;
