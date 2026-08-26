@@ -342,6 +342,49 @@
       <p><b>공급단가 = (원가 + 국내운반비) ÷ (1 − 마진율)</b> — 운반비는 우리가 부담하는 비용이라 원가에 합쳐 마진을 잡습니다. 따라서 마진율 30%를 넣으면 <b>운반비까지 반영된 최종 이익률이 30%</b>가 됩니다. <b>할인 공급단가 = 공급단가 × (1 − 할인율)</b>, <b>이익금 = 할인 공급단가 − (원가 + 운반비)</b>. 국내운반비는 자동 계산되지만 직접 입력할 수도 있습니다. 부가세 포함 공급단가는 <b>할인 공급단가 × 1.1</b>(운반비 미포함)이며, 소비자가 대비 이익률은 거래처가 가져가는 마진이라 이 금액을 기준으로 계산합니다. 운송방식(택배/화물/파렛트)을 고르면 국내운반비가 계산되고, 택배는 박스 세 변 합으로 단계가 자동 지정됩니다(수동 변경 가능). 운반비 단가는 '운임 설정(국내)'에서 조정합니다.</p>
     </div>
   </section>
+
+<section class="panel" id="panel-supplyDlv">
+    <div class="lookup" style="border-top-color:var(--accent);margin-bottom:14px;">
+      <div class="lk-head"><span class="lk-label">품목코드·품목명으로 품목 추가</span>
+        <div class="lk-inwrap"><input id="supplyDlvSearch" class="lk-input" type="text" autocomplete="off" placeholder="입력 후 목록에서 선택 — 제품원가·도매·온라인에 함께 추가됩니다"><div id="supplyDlvSug" class="lk-suggest"></div></div></div>
+    </div>
+    <div class="toolbar">
+      <button class="btn" id="supplyDlvDelPicked">선택 삭제</button>
+      <button class="btn" id="supplyDlvRefToggle">기존가격 보기</button>
+      <button class="btn" id="supplyDlvExport">Excel 내보내기</button>
+      <div class="spacer"></div>
+      <span class="source-tag"><b style="color:var(--muted);font-weight:700;">도매(그라첸/오프라인_택배)</b> · <span id="supplyDlvCount">0</span></span>
+    </div>
+    <div class="table-scroll">
+      <table class="supTable">
+        <thead><tr>
+          <th class="drag-th"></th><th>선택<div class="unit-hint"><label style="cursor:pointer;white-space:nowrap;"><input type="checkbox" id="supplyDlvPickAll" style="vertical-align:middle;margin:0 2px 0 0;"> 전체</label></div></th><th class="lbl">품목코드</th><th class="lbl">품목명</th>
+          <th class="grp">원가<div class="unit-hint">개당 · 원</div></th>
+          <th class="grp refc">기존원가<div class="unit-hint">데이터</div></th>
+          <th class="grp refc">원가 증감률<div class="unit-hint">기존 대비</div></th>
+          <th>마진율<div class="unit-hint">공급단가 기준 %</div></th>
+          <th class="grp">공급단가<div class="unit-hint">원</div></th>
+          <th class="grp refc">기존공급단가<div class="unit-hint">데이터</div></th>
+          <th class="grp refc">증감률<div class="unit-hint">기존가 대비</div></th>
+          <th>할인율<div class="unit-hint">%</div></th>
+          <th class="grp dsupc">할인 공급단가<div class="unit-hint">원</div></th>
+          <th class="grp vatx">부가세 포함 공급단가<div class="unit-hint">할인 공급단가 · ×1.1</div></th>
+          <th class="grp">이익금<div class="unit-hint">개당 · 원</div></th>
+          <th>그라첸 이익률<div class="unit-hint">할인가 기준 %</div></th>
+          <th class="grp">소비자가<div class="unit-hint">원 · VAT포함</div></th>
+          <th>거래처 이익률<div class="unit-hint">소비자가 대비 %</div></th>
+          <th>운반비<div class="unit-hint">방식</div></th>
+          <th>택배 단계</th>
+          <th class="grp">국내운반비<div class="unit-hint">개당 · 원</div></th><th class="grp refc">운반비 비율<div class="unit-hint">공급단가(별도) 대비 %</div></th>
+          <th></th>
+        </tr></thead>
+        <tbody id="supplyDlvBody"></tbody>
+      </table>
+    </div>
+    <div class="footnote">
+      <p><b>공급단가 = (원가 + 국내운반비) ÷ (1 − 마진율)</b> — 운반비는 우리가 부담하는 비용이라 원가에 합쳐 마진을 잡습니다. 따라서 마진율 30%를 넣으면 <b>운반비까지 반영된 최종 이익률이 30%</b>가 됩니다. <b>할인 공급단가 = 공급단가 × (1 − 할인율)</b>, <b>이익금 = 할인 공급단가 − (원가 + 운반비)</b>. 국내운반비는 자동 계산되지만 직접 입력할 수도 있습니다. 부가세 포함 공급단가는 <b>할인 공급단가 × 1.1</b>(운반비 미포함)이며, 소비자가 대비 이익률은 거래처가 가져가는 마진이라 이 금액을 기준으로 계산합니다. 운송방식(택배/화물/파렛트)을 고르면 국내운반비가 계산되고, 택배는 박스 세 변 합으로 단계가 자동 지정됩니다(수동 변경 가능). 운반비 단가는 '운임 설정(국내)'에서 조정합니다.</p>
+    </div>
+  </section>
   <section class="panel" id="panel-supplyGrSpecial">
     <div class="lookup" style="border-top-color:var(--accent);margin-bottom:14px;">
       <div class="lk-head"><span class="lk-label">품목코드·품목명으로 품목 추가</span>
@@ -460,6 +503,47 @@
           <th></th>
         </tr></thead>
         <tbody id="supplyHdBody"></tbody>
+      </table>
+    </div>
+    <div class="footnote">
+      <p><b>공급단가 = (원가 + 국내운반비) ÷ (1 − 마진율)</b> — 운반비는 우리가 부담하는 비용이라 원가에 합쳐 마진을 잡습니다. 따라서 마진율 30%를 넣으면 <b>운반비까지 반영된 최종 이익률이 30%</b>가 됩니다. <b>할인 공급단가 = 공급단가 × (1 − 할인율)</b>, <b>이익금 = 할인 공급단가 − (원가 + 운반비)</b>. 국내운반비는 자동 계산되지만 직접 입력할 수도 있습니다. 부가세 포함 공급단가는 <b>할인 공급단가 × 1.1</b>(운반비 미포함)이며, 소비자가 대비 이익률은 거래처가 가져가는 마진이라 이 금액을 기준으로 계산합니다. 운송방식(택배/화물/파렛트)을 고르면 국내운반비가 계산되고, 택배는 박스 세 변 합으로 단계가 자동 지정됩니다(수동 변경 가능). 운반비 단가는 '운임 설정(국내)'에서 조정합니다.</p>
+    </div>
+  </section>
+
+<section class="panel" id="panel-supplyHdDlv">
+    <div class="lookup" style="border-top-color:var(--accent);margin-bottom:14px;">
+      <div class="lk-head"><span class="lk-label">품목코드·품목명으로 품목 추가</span>
+        <div class="lk-inwrap"><input id="supplyHdDlvSearch" class="lk-input" type="text" autocomplete="off" placeholder="입력 후 목록에서 선택 — 제품원가·도매·온라인에 함께 추가됩니다"><div id="supplyHdDlvSug" class="lk-suggest"></div></div></div>
+    </div>
+    <div class="toolbar">
+      <button class="btn" id="supplyHdDlvDelPicked">선택 삭제</button>
+      <button class="btn" id="supplyHdDlvRefToggle">기존가격 보기</button>
+      <button class="btn" id="supplyHdDlvExport">Excel 내보내기</button>
+      <div class="spacer"></div>
+      <span class="source-tag"><b style="color:var(--muted);font-weight:700;">도매(핸든/오프라인_택배)</b> · <span id="supplyHdDlvCount">0</span></span>
+    </div>
+    <div class="table-scroll">
+      <table class="supTable">
+        <thead><tr>
+          <th class="drag-th"></th><th>선택<div class="unit-hint"><label style="cursor:pointer;white-space:nowrap;"><input type="checkbox" id="supplyHdDlvPickAll" style="vertical-align:middle;margin:0 2px 0 0;"> 전체</label></div></th><th class="lbl">품목코드</th><th class="lbl">품목명</th>
+          <th class="grp">원가<div class="unit-hint">대성→핸든 공급가</div></th>
+          <th class="grp refc">기존원가<div class="unit-hint">데이터</div></th>
+          <th class="grp refc">원가 증감률<div class="unit-hint">기존 대비</div></th>
+          <th>마진율<div class="unit-hint">공급단가 기준 %</div></th>
+          <th class="grp">공급단가<div class="unit-hint">원</div></th>
+          <th class="grp refc">기존공급단가<div class="unit-hint">데이터</div></th>
+          <th class="grp refc">증감률<div class="unit-hint">기존가 대비</div></th>
+          <th>할인율<div class="unit-hint">%</div></th>
+          <th class="grp">할인 공급단가<div class="unit-hint">원</div></th>
+          <th class="grp">이익금<div class="unit-hint">개당 · 원</div></th>
+          <th>이익률<div class="unit-hint">할인가 기준 %</div></th>
+          <th class="grp vatx">부가세 포함 공급단가<div class="unit-hint">할인 공급단가 · ×1.1</div></th>
+          <th>운반비<div class="unit-hint">방식</div></th>
+          <th>택배 단계</th>
+          <th class="grp">국내운반비<div class="unit-hint">개당 · 원</div></th><th class="grp refc">운반비 비율<div class="unit-hint">공급단가(별도) 대비 %</div></th>
+          <th></th>
+        </tr></thead>
+        <tbody id="supplyHdDlvBody"></tbody>
       </table>
     </div>
     <div class="footnote">
@@ -929,7 +1013,7 @@
     freight:{truckTotal:300000,truckCbm:6},
     pallet:{truckTotal:300000,palletCount:2,w:1.1,d:1.1,h:1.55,palletFee:4000}
   };}
-  var state = { rates:{krwUsd:1500, rmbUsd:6.7, krwRmb:220}, freight:DEFAULT_FREIGHT(), domestic:DEFAULT_DOMESTIC(), db:[], products:[], productsLcl:[], supply:[], supplyGrSpecial:[], supplyDsHd:[], supplyHd:[], supplyOnline:[], supplyGrCoupang:[], supplyOnJasa:[], supplyOnSmart:[], supplyOnCoupang:[], supplyOnOhouse:[], supplyOnToss:[], supplyOnGroup:[], supplyOnGroupVendor:[] };
+  var state = { rates:{krwUsd:1500, rmbUsd:6.7, krwRmb:220}, freight:DEFAULT_FREIGHT(), domestic:DEFAULT_DOMESTIC(), db:[], products:[], productsLcl:[], supply:[], supplyDlv:[], supplyGrSpecial:[], supplyDsHd:[], supplyHd:[], supplyHdDlv:[], supplyOnline:[], supplyGrCoupang:[], supplyOnJasa:[], supplyOnSmart:[], supplyOnCoupang:[], supplyOnOhouse:[], supplyOnToss:[], supplyOnGroup:[], supplyOnGroupVendor:[] };
   var uid=0; function nid(){return "r"+(++uid);}
 
   function convKRW(cur,amount){var a=n(amount),R=state.rates;
@@ -1366,8 +1450,9 @@
     var price=n(tier.price)/1.1;
     if(s.method==="택배단품")return price;
     return ea>0?price/ea:price;}
+  function isDlvTab(k){return k==="supplyDlv"||k==="supplyHdDlv";}
   var SUP_DEFS=[
-    {key:"supply",label:"도매(그라첸/오프라인)",online:false,retail:true},{key:"supplyGrSpecial",label:"도매(그라첸/특판)",online:false,spec:true},{key:"supplyDsHd",label:"도매(그라첸/대성-핸든)",online:false,chain:true},{key:"supplyHd",label:"도매(핸든)",online:false,hd:true},
+    {key:"supply",label:"도매(그라첸/오프라인)",online:false,retail:true},{key:"supplyDlv",label:"도매(그라첸/오프라인_택배)",online:false,retail:true},{key:"supplyGrSpecial",label:"도매(그라첸/특판)",online:false,spec:true},{key:"supplyDsHd",label:"도매(그라첸/대성-핸든)",online:false,chain:true},{key:"supplyHd",label:"도매(핸든/오프라인)",online:false,hd:true},{key:"supplyHdDlv",label:"도매(핸든/오프라인_택배)",online:false,hd:true},
     {key:"supplyOnline",label:"온라인(그라첸/스마트스토어)",online:true,defFee:4.4,defCoupon:2500},{key:"supplyGrCoupang",label:"온라인(그라첸/쿠팡)",online:true,defFee:0,buy:true},
     {key:"supplyOnJasa",label:"온라인(핸든/자사몰)",online:true,hd:true},{key:"supplyOnSmart",label:"온라인(핸든/스마트스토어)",online:true,defFee:4.4,defCoupon:2500,hd:true},
     {key:"supplyOnCoupang",label:"온라인(핸든/쿠팡)",online:true,defFee:12,hd:true},{key:"supplyOnOhouse",label:"온라인(핸든/오늘의집)",online:true,defFee:18,hd:true},{key:"supplyOnToss",label:"온라인(핸든/토스)",online:true,defFee:8,hd:true},
@@ -1393,7 +1478,7 @@
     if(SV.group){o.groupMargin=30;o.groupManualSup=false;}
     if(SV.gnew){o.fee2=0;o.qty=0;}
     if(SV.gven){o.qty=0;}
-    o.method=SV.online?"택배단품":"화물";o.courierTier=autoTier(o.girthIn);
+    o.method=SV.online?"택배단품":(isDlvTab(SV.key)?"택배":"화물");o.courierTier=autoTier(o.method==="택배"?o.girth:o.girthIn);
     if(SV.online){o.ad=0;o.fee=SV.defFee;o.coupon=SV.defCoupon;if(SV.gnew){o.fee2=0;o.qty=0;o.manualSup=true;}if(SV.gven){o.qty=0;o.manualSup=true;}
       if(SV.buy){o.consumer=n(o.prevConsumer);if(n(o.coupangBuy)>0){o.manualSup=true;o.supplyVal=n(o.coupangBuy);}}
       else if(n(o.prevConsumer)>0){o.manualSup=true;o.supplyVal=n(o.prevConsumer);}}
@@ -1579,7 +1664,7 @@
     var tdPrev=(online||chain)?null:prevCell(s.prevCost*_refF);
     var tdChgC=(online||chain)?null:calc("refc");
     var tdPrevSup=prevCell((SV.buy?s.coupangBuy:(online?s.prevConsumer:s.prevSupply))*_refF);
-    var meth=selEl();["택배단품","택배","화물","파렛트","별도"].forEach(function(m){var o=document.createElement("option");o.value=m;o.textContent=(m==="파렛트"?"화물(파렛트)":(m==="택배단품"?"택배(단품)":m));meth.appendChild(o);});meth.value=s.method||(online?"택배단품":"화물");
+    var meth=selEl();["택배단품","택배","화물","파렛트","별도"].forEach(function(m){var o=document.createElement("option");o.value=m;o.textContent=(m==="파렛트"?"화물(파렛트)":(m==="택배단품"?"택배(단품)":m));meth.appendChild(o);});meth.value=s.method||(online?"택배단품":(isDlvTab(SV.key)?"택배":"화물"));
     var tier=selEl();
     function fillTier(){tier.innerHTML="";var o0=document.createElement("option");o0.value="";o0.textContent="-";tier.appendChild(o0);state.domestic.courier.tiers.forEach(function(t){var o=document.createElement("option");o.value=t.name;o.textContent=t.name;tier.appendChild(o);});tier.value=s.courierTier||"";}
     fillTier();
@@ -2153,13 +2238,16 @@
       {id:"gr",label:"그라첸",children:[
         {id:"grW",label:"도매",children:[
           {id:"supply",label:"그라첸(오프라인)"},
+          {id:"supplyDlv",label:"그라첸(오프라인_택배)"},
           {id:"supplyGrSpecial",label:"그라첸(특판)"},
           {id:"supplyDsHd",label:"그라첸(대성→핸든)"}]},
         {id:"grO",label:"온라인",children:[
           {id:"supplyOnline",label:"스마트스토어"},
           {id:"supplyGrCoupang",label:"쿠팡"}]}]},
       {id:"hd",label:"핸든",children:[
-        {id:"supplyHd",label:"도매"},
+        {id:"hdW",label:"도매",children:[
+          {id:"supplyHd",label:"핸든(오프라인)"},
+          {id:"supplyHdDlv",label:"핸든(오프라인_택배)"}]},
         {id:"hdO",label:"온라인",children:[
           {id:"supplyOnJasa",label:"자사몰"},
           {id:"supplyOnSmart",label:"스마트스토어"},
