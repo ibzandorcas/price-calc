@@ -253,7 +253,7 @@
           <th>CBM<div class="unit-hint">박스당</div></th><th>관세율<div class="unit-hint">%</div></th>
           <th class="grp vatx">단위 원가<div class="unit-hint">개당</div></th><th class="grp">부가세 포함 원가<div class="unit-hint">개당 · ×1.1</div></th><th class="grp refc">기존원가<div class="unit-hint">데이터</div></th><th class="grp refc">증감률<div class="unit-hint">기존 대비</div></th><th class="grp vatx">원화 매입가<div class="unit-hint">개당</div></th>
           <th class="grp vatx">개당 운임<div class="unit-hint">원</div></th><th class="grp vatx">관세<div class="unit-hint">개당 · CIF</div></th>
-          <th>항구</th><th>운임종류</th><th>결제통화</th><th class="lbl">구매처</th><th>중국내륙<div class="unit-hint">YiWu 자동 · 해제 가능</div></th><th>추가비용<div class="unit-hint">수동</div></th><th></th>
+          <th>항구</th><th>운임종류</th><th>결제통화</th><th class="lbl">구매처</th><th>중국내륙<div class="unit-hint inland-hint">자동 · 해제 가능</div></th><th>추가비용<div class="unit-hint">수동</div></th><th></th>
         </tr></thead>
         <tbody id="tbody"></tbody>
       </table>
@@ -1058,7 +1058,13 @@
     if(cur==="USD")return a*n(R.krwUsd); if(cur==="RMB")return n(R.rmbUsd)>0?(a/n(R.rmbUsd))*n(R.krwUsd):0; return a;}
   function fmtNum(v,d){var f=Math.pow(10,d||0);return (Math.round(v*f)/f).toLocaleString("ko-KR");}
 
-  function findProfile(port,c){var r=null;state.freight.profiles.forEach(function(p){if(p.container===c&&p.port===port)r=p;});return r;}
+  function _portKey(v){return String(v==null?"":v).toLowerCase().replace(/[^a-z0-9]/g,"");}
+  function findProfile(port,c){
+    var r=null;state.freight.profiles.forEach(function(p){if(p.container===c&&p.port===port)r=p;});
+    if(r)return r;
+    var k=_portKey(port);
+    if(k!=="")state.freight.profiles.forEach(function(p){if(p.container===c&&_portKey(p.port)===k)r=p;});
+    return r;}
   function getProfile(port,c){if(port==="")return findProfile("",c);return findProfile(port,c);}
   function portsForContainer(c){var s=[];state.freight.profiles.forEach(function(p){if(p.container===c)s.push(p.port);});return s;}
   function ensureEditing(){var list=portsForContainer(state.freight.activeContainer);
@@ -1115,7 +1121,6 @@
     state.productsLcl.forEach(function(p){add(p.port);});
     return list;
   }
-  function _portKey(v){return String(v==null?"":v).toLowerCase().replace(/[^a-z0-9]/g,"");}
   function autoPortOf(cont){
     var I=state.freight.inland||{},m=I.autoPorts,k=cont||"";
     if(m&&Object.prototype.hasOwnProperty.call(m,k))return m[k]||"";
