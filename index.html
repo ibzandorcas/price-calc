@@ -240,6 +240,7 @@
       <button class="btn" id="exportXlsx">Excel 데이터 내보내기</button>
       <button class="btn" id="exportCsv">Excel 원가리스트 내보내기</button>
       <button class="btn" id="toSupply">✓ 공급단가로 보내기</button>
+      <button class="btn" id="shareList">다른 탭에 리스트 공유</button>
       <button class="btn" id="delPicked">선택 삭제</button>
       <div class="spacer"></div>
       <span class="source-tag"><span class="dot" id="srcDot"></span><span id="srcText">내장 샘플</span> · <span id="prodCount">0</span></span>
@@ -252,8 +253,8 @@
           <th>매입가<div class="unit-hint">위안</div></th><th>매입가<div class="unit-hint">USD</div></th>
           <th>CBM<div class="unit-hint">박스당</div></th><th>관세율<div class="unit-hint">%</div></th>
           <th class="grp vatx">단위 원가<div class="unit-hint">개당</div></th><th class="grp">부가세 포함 원가<div class="unit-hint">개당 · ×1.1</div></th><th class="grp refc">기존원가<div class="unit-hint">데이터</div></th><th class="grp refc">증감률<div class="unit-hint">기존 대비</div></th><th class="grp vatx">원화 매입가<div class="unit-hint">개당</div></th>
-          <th class="grp vatx">개당 운임<div class="unit-hint">원</div></th><th class="grp vatx">관세<div class="unit-hint">개당 · CIF</div></th>
-          <th>항구</th><th>운임종류</th><th>결제통화</th><th class="lbl">구매처</th><th>중국내륙<div class="unit-hint inland-hint">자동 · 해제 가능</div></th><th>추가비용<div class="unit-hint">수동</div></th><th></th>
+          <th class="grp vatx">관세<div class="unit-hint">개당 · CIF</div></th>
+          <th>항구</th><th>운임종류</th><th>결제통화</th><th class="lbl">구매처</th><th class="grp">운임비<div class="unit-hint">개당 · 원</div></th><th>중국내륙<div class="unit-hint inland-hint">자동 · 해제 가능</div></th><th>추가비용<div class="unit-hint">수동</div></th><th></th>
         </tr></thead>
         <tbody id="tbody"></tbody>
       </table>
@@ -277,6 +278,7 @@
       <button class="btn" id="exportXlsxL">Excel 데이터 내보내기</button>
       <button class="btn" id="exportCsvL">Excel 원가리스트 내보내기</button>
       <button class="btn" id="toSupplyL">✓ 공급단가로 보내기</button>
+      <button class="btn" id="shareListL">다른 탭에 리스트 공유</button>
       <button class="btn" id="delPickedL">선택 삭제</button>
       <div class="spacer"></div>
       <span class="source-tag"><span class="dot" id="srcDotL"></span><span id="srcTextL">내장 샘플</span> · <span id="prodCountL">0</span></span>
@@ -289,8 +291,8 @@
           <th>매입가<div class="unit-hint">위안</div></th><th>매입가<div class="unit-hint">USD</div></th>
           <th>CBM<div class="unit-hint">박스당</div></th><th>관세율<div class="unit-hint">%</div></th>
           <th class="grp vatx">단위 원가<div class="unit-hint">개당</div></th><th class="grp">부가세 포함 원가<div class="unit-hint">개당 · ×1.1</div></th><th class="grp refc">기존원가<div class="unit-hint">데이터</div></th><th class="grp refc">증감률<div class="unit-hint">기존 대비</div></th><th class="grp vatx">원화 매입가<div class="unit-hint">개당</div></th>
-          <th class="grp vatx">개당 운임<div class="unit-hint">원</div></th><th class="grp vatx">관세<div class="unit-hint">개당 · CIF</div></th>
-          <th>항구</th><th>운임종류</th><th>결제통화</th><th class="lbl">구매처</th><th>중국내륙<div class="unit-hint">RMB 총액 직접입력 · 체크 시 기본값</div></th><th>추가비용<div class="unit-hint">총액 직접입력 · 체크 시 기본값</div></th><th></th>
+          <th class="grp vatx">관세<div class="unit-hint">개당 · CIF</div></th>
+          <th>항구</th><th>운임종류</th><th>결제통화</th><th class="lbl">구매처</th><th class="grp">운임비<div class="unit-hint">개당 · 원</div></th><th>중국내륙<div class="unit-hint">RMB 총액 직접입력 · 체크 시 기본값</div></th><th>추가비용<div class="unit-hint">총액 직접입력 · 체크 시 기본값</div></th><th></th>
         </tr></thead>
         <tbody id="tbodyL"></tbody>
       </table>
@@ -313,6 +315,7 @@
       <button class="btn" id="exportXlsxM">Excel 데이터 내보내기</button>
       <button class="btn" id="exportCsvM">Excel 원가리스트 내보내기</button>
       <button class="btn" id="toSupplyM">✓ 공급단가로 보내기</button>
+      <button class="btn" id="shareListM">다른 탭에 리스트 공유</button>
       <button class="btn" id="delPickedM">선택 삭제</button>
       <div class="spacer"></div>
       <span class="source-tag"><span class="dot" id="srcDotM"></span><span id="srcTextM">내장 샘플</span> · <span id="prodCountM">0</span></span>
@@ -325,8 +328,8 @@
           <th>매입가<div class="unit-hint">위안</div></th><th>매입가<div class="unit-hint">USD</div></th>
           <th>CBM<div class="unit-hint">박스당</div></th><th>관세율<div class="unit-hint">%</div></th>
           <th class="grp vatx">단위 원가<div class="unit-hint">개당</div></th><th class="grp">부가세 포함 원가<div class="unit-hint">개당 · ×1.1</div></th><th class="grp refc">기존원가<div class="unit-hint">데이터</div></th><th class="grp refc">증감률<div class="unit-hint">기존 대비</div></th><th class="grp vatx">원화 매입가<div class="unit-hint">개당</div></th>
-          <th class="grp vatx">개당 운임<div class="unit-hint">원</div></th><th class="grp vatx">관세<div class="unit-hint">개당 · CIF</div></th>
-          <th>항구</th><th>운임종류</th><th>결제통화</th><th class="lbl">구매처</th><th>중국내륙<div class="unit-hint">RMB 총액 직접입력 · 체크 시 기본값</div></th><th>추가비용<div class="unit-hint">총액 직접입력 · 체크 시 기본값</div></th><th></th>
+          <th class="grp vatx">관세<div class="unit-hint">개당 · CIF</div></th>
+          <th>항구</th><th>운임종류</th><th>결제통화</th><th class="lbl">구매처</th><th class="grp">운임비<div class="unit-hint">개당 · 원</div></th><th>중국내륙<div class="unit-hint">RMB 총액 직접입력 · 체크 시 기본값</div></th><th>추가비용<div class="unit-hint">총액 직접입력 · 체크 시 기본값</div></th><th></th>
         </tr></thead>
         <tbody id="tbodyM"></tbody>
       </table>
@@ -1298,7 +1301,7 @@
       ["RMB","USD"].forEach(function(c){var o=document.createElement("option");o.value=c;o.textContent=c;if(row.cur===c)o.selected=true;curSel.appendChild(o);});
       curSel.addEventListener("change",function(){row.cur=curSel.value;paintRow(row);});
       var tKrw=calcTd(),tFr=calcTd(),tDuty=calcTd(),tCost=calcTd("total");var tCbmTd=V.useQty?calcTd():null;
-      tKrw.className+=" vatx";tFr.className+=" vatx";tDuty.className+=" vatx";tCost.className+=" vatx";
+      tKrw.className+=" vatx";tDuty.className+=" vatx";tCost.className+=" vatx";tFr.className+=" grp";
       var tdDel=document.createElement("td");var del=document.createElement("button");del.className="del-btn";del.textContent="×";del.title="삭제";
       del.addEventListener("click",function(){state[V.key]=list().filter(function(x){return x.id!==row.id;});render();});
       tdDel.appendChild(del);
@@ -1311,9 +1314,10 @@
       tr.appendChild(td(cellInput(row,"priceUsd",{step:"0.01",cls:"price-in"})));
       tr.appendChild(td(cellInput(row,"cbm",{step:"0.001",cls:"cbm-in"})));
       tr.appendChild(td(cellInput(row,"dutyRate",{step:"0.1"})));
-      tr.appendChild(tCost);var prevTd=document.createElement("td");prevTd.className="calc refc";prevTd.style.color="var(--muted)";var prevSp=document.createElement("span");prevSp.className="num";prevSp.textContent=won(n(row.prevCost));prevTd.appendChild(prevSp);var chgTd=document.createElement("td");chgTd.className="calc refc";var chgSp=document.createElement("span");chgSp.className="num";chgTd.appendChild(chgSp);var vatTd=document.createElement("td");vatTd.className="calc total";var vatSp=document.createElement("span");vatSp.className="num";vatTd.appendChild(vatSp);tr.appendChild(vatTd);tr.appendChild(prevTd);tr.appendChild(chgTd);tr.appendChild(tKrw);tr.appendChild(tFr);tr.appendChild(tDuty);
+      tr.appendChild(tCost);var prevTd=document.createElement("td");prevTd.className="calc refc";prevTd.style.color="var(--muted)";var prevSp=document.createElement("span");prevSp.className="num";prevSp.textContent=won(n(row.prevCost));prevTd.appendChild(prevSp);var chgTd=document.createElement("td");chgTd.className="calc refc";var chgSp=document.createElement("span");chgSp.className="num";chgTd.appendChild(chgSp);var vatTd=document.createElement("td");vatTd.className="calc total";var vatSp=document.createElement("span");vatSp.className="num";vatTd.appendChild(vatSp);tr.appendChild(vatTd);tr.appendChild(prevTd);tr.appendChild(chgTd);tr.appendChild(tKrw);tr.appendChild(tDuty);
       tr.appendChild(td(portSel,"name"));tr.appendChild(td(contSel,"name"));tr.appendChild(td(curSel,"name"));
       tr.appendChild(td(cellInput(row,"supplier",{text:true,cls:"sup-in"}),"name"));
+      tr.appendChild(tFr);
       tr.appendChild(inTd);tr.appendChild(exTd);tr.appendChild(tdDel);
       tr._c={krw:tKrw,fr:tFr,duty:tDuty,cost:tCost,totcbm:tCbmTd,chg:chgTd,vat:vatTd,prev:prevSp};return tr;
     }
@@ -1551,21 +1555,50 @@
       alert(added>0?(added+"개 품목을 도매·온라인 공급단가 시트로 보냈습니다."):"선택한 품목이 이미 양쪽 공급단가 시트에 있습니다.");
     }
     if(V.sendBtn)V.sendBtn.addEventListener("click",sendToSupply);
+    if(V.shareBtn)V.shareBtn.addEventListener("click",function(){
+      var src=list();
+      if(!src.length){alert("공유할 품목이 없습니다. 먼저 이 탭에 품목을 추가하세요.");return;}
+      var picked=src.filter(function(r){return r.pick;});
+      var rows=picked.length?picked:src;
+      var targets=PROD_VIEWS.filter(function(T){return T.key!==V.key;});
+      var names=targets.map(function(T){return T.label;}).join(", ");
+      var what=picked.length?("선택한 "+picked.length+"개"):("전체 "+src.length+"개");
+      if(!confirm(what+" 품목을 "+names+" 탭으로 보냅니다.\n각 탭에 이미 같은 품목코드가 있으면 건너뜁니다.\n계속할까요?"))return;
+      var added=0,skipped=0;
+      targets.forEach(function(T){
+        var L=state[T.key];
+        rows.forEach(function(r){
+          var code=(r.code||"").trim();
+          if(code!==""&&L.some(function(x){return (x.code||"").trim()===code;})){skipped++;return;}
+          var o={};for(var k in r){if(k!=="id"&&k!=="pick")o[k]=r[k];}
+          o.id=nid();
+          if(T.defCont){o.container=T.defCont;if(T.defPort!=null)o.port=T.defPort;}
+          if(T.defCur)o.cur=T.defCur;
+          o.inland=defInland(o.port,o.container);
+          if(T.useQty&&!n(o.qty))o.qty=1000;
+          L.push(o);added++;
+        });
+      });
+      panelFCL.render();panelLCL.render();panelMIX.render();
+      alert("공유 완료 — 추가 "+added+"건"+(skipped?(" · 중복 제외 "+skipped+"건"):"")+".");
+    });
     if(V.delBtn)V.delBtn.addEventListener("click",function(){var picked=list().filter(function(r){return r.pick;});if(picked.length===0){alert("삭제할 품목을 체크하세요.");return;}state[V.key]=list().filter(function(r){return !r.pick;});var pa=$tb.parentNode?$tb.parentNode.querySelector(".pick-all"):null;if(pa)pa.checked=false;render();});
     return {render:render,repaint:repaint};
   }
   var FCL={key:"products",defCont:null,defPort:null,exportName:"data",cost:costOf,useQty:false,
     tbody:document.getElementById("tbody"),codeEl:document.getElementById("lookupCode"),sgBox:document.getElementById("lkSuggest"),resultEl:document.getElementById("lookupResult"),warnEl:document.getElementById("warnBar"),countEl:document.getElementById("prodCount"),
-    addBtn:document.getElementById("addRow"),importBtn:document.getElementById("importBtn"),importFile:document.getElementById("importFile"),exportCsv:document.getElementById("exportCsv"),exportXlsx:document.getElementById("exportXlsx"),sendBtn:document.getElementById("toSupply"),delBtn:document.getElementById("delPicked"),
+    addBtn:document.getElementById("addRow"),importBtn:document.getElementById("importBtn"),importFile:document.getElementById("importFile"),shareBtn:document.getElementById("shareList"),exportCsv:document.getElementById("exportCsv"),exportXlsx:document.getElementById("exportXlsx"),sendBtn:document.getElementById("toSupply"),delBtn:document.getElementById("delPicked"),
     lookup:{foundCode:null,port:null,container:null},sg:{list:[],active:-1,selected:{},countEl:null}};
   var LCL={key:"productsLcl",defCont:"LCL",defPort:"WeiHai",defCur:"USD",exportName:"data_lcl",cost:costOfLcl,useQty:true,
     tbody:document.getElementById("tbodyL"),codeEl:document.getElementById("lookupCodeL"),sgBox:document.getElementById("lkSuggestL"),resultEl:document.getElementById("lookupResultL"),warnEl:document.getElementById("warnBarL"),countEl:document.getElementById("prodCountL"),
-    addBtn:document.getElementById("addRowL"),importBtn:document.getElementById("importBtnL"),importFile:document.getElementById("importFileL"),exportCsv:document.getElementById("exportCsvL"),exportXlsx:document.getElementById("exportXlsxL"),sendBtn:document.getElementById("toSupplyL"),delBtn:document.getElementById("delPickedL"),
+    addBtn:document.getElementById("addRowL"),importBtn:document.getElementById("importBtnL"),importFile:document.getElementById("importFileL"),shareBtn:document.getElementById("shareListL"),exportCsv:document.getElementById("exportCsvL"),exportXlsx:document.getElementById("exportXlsxL"),sendBtn:document.getElementById("toSupplyL"),delBtn:document.getElementById("delPickedL"),
     lookup:{foundCode:null,port:null,container:null},sg:{list:[],active:-1,selected:{},countEl:null}};
   var MIX={key:"productsFclMix",defCont:"40HC",defPort:null,exportName:"data_fclmix",cost:costOfFclMix,useQty:true,mix:true,
     tbody:document.getElementById("tbodyM"),codeEl:document.getElementById("lookupCodeM"),sgBox:document.getElementById("lkSuggestM"),resultEl:document.getElementById("lookupResultM"),warnEl:document.getElementById("warnBarM"),countEl:document.getElementById("prodCountM"),
-    addBtn:document.getElementById("addRowM"),importBtn:document.getElementById("importBtnM"),importFile:document.getElementById("importFileM"),exportCsv:document.getElementById("exportCsvM"),exportXlsx:document.getElementById("exportXlsxM"),sendBtn:document.getElementById("toSupplyM"),delBtn:document.getElementById("delPickedM"),
+    addBtn:document.getElementById("addRowM"),importBtn:document.getElementById("importBtnM"),importFile:document.getElementById("importFileM"),shareBtn:document.getElementById("shareListM"),exportCsv:document.getElementById("exportCsvM"),exportXlsx:document.getElementById("exportXlsxM"),sendBtn:document.getElementById("toSupplyM"),delBtn:document.getElementById("delPickedM"),
     lookup:{foundCode:null,port:null,container:null},sg:{list:[],active:-1,selected:{},countEl:null}};
+  FCL.label="제품원가(FCL)";MIX.label="제품원가(FCL_혼적)";LCL.label="제품원가(LCL)";
+  var PROD_VIEWS=[FCL,MIX,LCL];
   var panelFCL=makePanel(FCL),panelLCL=makePanel(LCL),panelMIX=makePanel(MIX);
   function repaintAllProducts(){panelFCL.repaint();panelLCL.repaint();panelMIX.repaint();renderSupplyAll();}
   function baseCostVal(s){
