@@ -2510,7 +2510,7 @@
   })();
 
   /* ===== importer ===== */
-  var ALIAS={code:["품목코드","품번","코드","code","sku","품목번호"],name:["품목명","제품명"],supplier:["구매처명","구매처","매입처"],port:["fob 항구","fob항구","fob","항구","출항항구","선적항","포트","port","pol","출항"],outbox:["outbox size","outbox","아웃박스","아웃박스 사이즈","박스사이즈"],inbox:["inbox size","inbox","인박스","이너박스","칼라박스","컬러박스"],prevCost:["입고단가","기존원가","기존 원가","이전원가","previous cost"],prevSupply:["출고단가","기존공급단가","기존 공급단가","기존공급가","이전공급단가","previous supply"],prevConsumer:["소비자가","기존소비자가","기존 소비자가","소비자가격","기존소비자가격","consumer price"],special:["특판단가","특판 단가","특판"],coupangBuy:["쿠팡사입가","쿠팡사입","쿠팡 사입","쿠팡사입 단가"],setUse:["세트","세트여부","세트사용"],dsPrice:["ds단가","ds 단가","대성단가"],hdPrice:["hd단가","hd 단가","핸든단가"],
+  var ALIAS={code:["품목코드","품번","코드","code","sku","품목번호"],name:["품목명","제품명"],supplier:["구매처명","구매처","매입처"],port:["fob 항구","fob항구","fob","항구","출항항구","선적항","포트","port","pol","출항"],outbox:["outbox size","outbox","아웃박스","아웃박스 사이즈","박스사이즈"],inbox:["inbox size","inbox","인박스","이너박스","칼라박스","컬러박스"],prevCost:["입고단가","기존원가","기존 원가","이전원가","previous cost"],prevSupply:["출고단가","기존공급단가","기존 공급단가","기존공급가","이전공급단가","previous supply"],prevSupplyDlv:["출고단가(택배발송)","출고단가(택배)","택배출고단가","출고단가 택배발송"],prevConsumer:["소비자가","기존소비자가","기존 소비자가","소비자가격","기존소비자가격","consumer price"],special:["특판단가","특판 단가","특판"],coupangBuy:["쿠팡사입가","쿠팡사입","쿠팡 사입","쿠팡사입 단가"],setUse:["세트","세트여부","세트사용"],dsPrice:["ds단가","ds 단가","대성단가"],hdPrice:["hd단가","hd 단가","핸든단가"],
     container:["컨테이너","운임종류","container","컨테이너종류","컨종류"],
     cur:["결제통화","통화"],priceUsd:["usd","매입가(usd)"],priceRmb:["rmb","매입가(위안)","매입가(rmb)","위안"],
     eaCt:["ea/ct","eact","입수","ea"],cbm:["cbm"],dutyRate:["관세","관세율(%)","관세율"]};
@@ -2529,16 +2529,17 @@
     var out=[],k;
     for(k=best+1;k<rows.length;k++){var r=rows[k];
       var g=function(t){var j=idx[t];return (j>-1&&j<r.length)?r[j]:null;};
-      var name=g("name"),pu=g("priceUsd"),pr=g("priceRmb");
-      var hasPrice=(pu!=null&&pu!=="")||(pr!=null&&pr!=="");
-      if(name==null||String(name).trim()===""||!hasPrice)continue;
+      var name=g("name"),pu=g("priceUsd"),pr=g("priceRmb"),codeV=g("code");
+      var hasName=(name!=null&&String(name).trim()!=="");
+      var hasCode=(codeV!=null&&String(codeV).trim()!=="");
+      if(!hasName&&!hasCode)continue;
       var cr=g("cur"),cu=cr?String(cr).trim().toUpperCase():"";
       var cur=cu==="USD"?"USD":cu==="RMB"?"RMB":(n(pr)>0?"RMB":"USD");
       var ct=g("container");ct=ct?String(ct).trim().toUpperCase():"";if(CONTAINERS.indexOf(ct)<0)ct=defContainer(String(g("port")||""));
       var portv=String(g("port")||"").trim();
       function _girth(v){var mm=String(v==null?"":v).match(/\d+(?:\.\d+)?/g);return (mm&&mm.length>=3)?Math.round((parseFloat(mm[0])+parseFloat(mm[1])+parseFloat(mm[2]))/10*10)/10:0;}
       var gv=_girth(g("outbox")),giv=_girth(g("inbox"));
-      out.push({id:nid(),code:String(g("code")||"").trim(),name:String(name).trim(),supplier:String(g("supplier")||"").trim(),port:portv,container:ct,girth:gv,girthIn:giv,prevCost:n(g("prevCost")),prevSupply:n(g("prevSupply")),prevConsumer:n(g("prevConsumer")),special:n(g("special")),coupangBuy:n(g("coupangBuy")),dsPrice:n(g("dsPrice")),hdPrice:n(g("hdPrice")),setUse:String(g("setUse")||"").trim(),inland:defInland(portv,ct),
+      out.push({id:nid(),code:String(codeV==null?"":codeV).trim(),name:String(name==null?"":name).trim(),supplier:String(g("supplier")||"").trim(),port:portv,container:ct,girth:gv,girthIn:giv,prevCost:n(g("prevCost")),prevSupply:n(g("prevSupply")),prevSupplyDlv:n(g("prevSupplyDlv")),prevConsumer:n(g("prevConsumer")),special:n(g("special")),coupangBuy:n(g("coupangBuy")),dsPrice:n(g("dsPrice")),hdPrice:n(g("hdPrice")),setUse:String(g("setUse")||"").trim(),inland:defInland(portv,ct),
         cur:cur,priceUsd:n(pu),priceRmb:n(pr),eaCt:n(g("eaCt")),cbm:n(g("cbm")),dutyRate:n(g("dutyRate"))});}
     return out;
   }
