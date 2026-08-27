@@ -1677,20 +1677,49 @@
     if(SV.chain){o.margin=5;o.margin2=4;
       if(n(o.dsPrice)>0){o.manualSup=true;o.supplyVal=n(o.dsPrice)/1.1;}
       if(n(o.hdPrice)>0){o.manualSup2=true;o.supplyVal2=n(o.hdPrice)/1.1;}}
+    if(SV.key==="supplyHd"){
+      var _hb=offlineSupplyVal("supply",o.code);
+      if(_hb==null&&n(o.prevSupply)>0)_hb=n(o.prevSupply)/1.1;
+      if(_hb!=null&&_hb>0){o.manualSup=true;o.supplyVal=_hb;}
+    }
+    if(isDlvTab(SV.key)){
+      var _cu=courierUnit(o);
+      if(n(o.prevSupplyDlv)>0){o.manualSup=true;o.supplyVal=n(o.prevSupplyDlv)/1.1;}
+      else{
+        var _b=offlineSupplyVal((SV.key==="supplyDlv")?"supply":"supplyDlv",o.code);
+        if(_b!=null&&_b>0&&SV.key==="supplyHdDlv"){o.manualSup=true;o.supplyVal=_b;}
+        else{
+          if(_b==null)_b=offlineSupplyVal("supply",o.code);
+          if(_b==null&&n(o.prevSupply)>0)_b=n(o.prevSupply)/1.1;
+          if(_b!=null&&_b>0){o.manualSup=true;o.supplyVal=_b+_cu;}
+        }
+      }
+    }
     return o;}
+  function courierUnit(o){
+    var t={eaCt:o.eaCt,cbm:o.cbm,method:"택배",courierTier:o.courierTier||autoTier(o.girth),domManual:false};
+    return domesticUnit(t);}
+  function offlineSupplyVal(key,code){
+    code=(code||"").trim();if(!code)return null;
+    var V=null;SUP_VIEWS.forEach(function(x){if(x.key===key)V=x;});
+    var row=null;(state[key]||[]).forEach(function(x){if((x.code||"").trim()===code)row=x;});
+    if(!row||!V)return null;
+    if(row.manualSup)return n(row.supplyVal);
+    var cost=supplyCostVal(V,row),dom=domesticUnit(row),m=n(row.margin);
+    return (m>=0&&m<100)?(cost+dom)/(1-m/100):0;}
   function snapshotState(){var snap={v:2,savedAt:new Date().toISOString(),rates:state.rates,freight:state.freight,domestic:state.domestic,products:state.products,productsLcl:state.productsLcl};SUP_DEFS.forEach(function(d){snap[d.key]=state[d.key];});return snap;}
   function unifiedExport(){
     if(!window.XLSX){alert("Excel 라이브러리를 불러오지 못했습니다.");return;}
     function viewOf(k){var V=null;SUP_VIEWS.forEach(function(x){if(x.key===k)V=x;});return V;}
     function idx(k){var m={};(state[k]||[]).forEach(function(s){var c=(s.code||"").trim();if(c&&!m[c])m[c]=s;});return m;}
-    var Vret=viewOf("supply"),Vspc=viewOf("supplyGrSpecial"),Vbuy=viewOf("supplyGrCoupang"),Vchn=viewOf("supplyDsHd");
-    var Iret=idx("supply"),Ispc=idx("supplyGrSpecial"),Ibuy=idx("supplyGrCoupang"),Ichn=idx("supplyDsHd");
+    var Vret=viewOf("supply"),Vdlv=viewOf("supplyDlv"),Vspc=viewOf("supplyGrSpecial"),Vbuy=viewOf("supplyGrCoupang"),Vchn=viewOf("supplyDsHd");
+    var Iret=idx("supply"),Idlv=idx("supplyDlv"),Ispc=idx("supplyGrSpecial"),Ibuy=idx("supplyGrCoupang"),Ichn=idx("supplyDsHd");
     var pmap={},order=[],seen={};
     state.products.forEach(function(p){var c=(p.code||"").trim();if(!c)return;if(!pmap[c])pmap[c]=p;if(!seen[c]){seen[c]=1;order.push(c);}});
-    [Iret,Ispc,Ibuy,Ichn].forEach(function(M){for(var c in M){if(!seen[c]){seen[c]=1;order.push(c);}}});
+    [Iret,Idlv,Ispc,Ibuy,Ichn].forEach(function(M){for(var c in M){if(!seen[c]){seen[c]=1;order.push(c);}}});
     if(!order.length){alert("내보낼 품목이 없습니다. 제품원가 또는 공급단가 탭에 품목을 먼저 추가하세요.");return;}
     function nameOf(c){var p=pmap[c];if(p&&p.name)return p.name;
-      var r=Iret[c]||Ispc[c]||Ibuy[c]||Ichn[c];return (r&&r.name)||"";}
+      var r=Iret[c]||Idlv[c]||Ispc[c]||Ibuy[c]||Ichn[c];return (r&&r.name)||"";}
     function roundLanded(v){if(!(v>0))return "";
       if(v>=1000)return Math.ceil(v/100)*100;
       if(v>=100)return Math.ceil(v/10)*10;
@@ -1713,12 +1742,12 @@
       if(step===1)return s1>0?Math.round(s1*1.1):"";
       var s2=s.manualSup2?n(s.supplyVal2):((m2>=0&&m2<100)?s1/(1-m2/100):0);
       return s2>0?Math.round(s2*1.1):"";}
-    var head=["품목코드","품목명","입고원가(원)","부가세포함여부","오프라인 공급단가(원)","부가세포함여부","특판 공급단가(원)","부가세포함여부","쿠팡 사입가(원)","부가세포함여부","쿠팡 소비자가(원)","부가세포함여부","그라첸→대성 공급단가(원)","부가세포함여부","대성→핸든 공급단가(원)","부가세포함여부"];
+    var head=["품목코드","품목명","입고원가(원)","부가세포함여부","오프라인 공급단가(원)","부가세포함여부","오프라인(택배) 공급단가(원)","부가세포함여부","특판 공급단가(원)","부가세포함여부","쿠팡 사입가(원)","부가세포함여부","쿠팡 소비자가(원)","부가세포함여부","그라첸→대성 공급단가(원)","부가세포함여부","대성→핸든 공급단가(원)","부가세포함여부"];
     var d=new Date(),y=d.getFullYear(),mo=("0"+(d.getMonth()+1)).slice(-2),da=("0"+d.getDate()).slice(-2);
     var ymd=""+y+mo+da,iso=y+"-"+mo+"-"+da;
     var aoa=[["통합 단가표 — 모든 금액 부가세 포함 기준"],[],head];
     order.forEach(function(c){
-      aoa.push([c,nameOf(c),landed(c),1,plain(Vret,Iret,c),1,plain(Vspc,Ispc,c),"Y",coupang(c,"buy"),"Y",coupang(c,"consumer"),"Y",chain(c,1),"Y",chain(c,2),"Y"]);});
+      aoa.push([c,nameOf(c),landed(c),1,plain(Vret,Iret,c),1,plain(Vdlv,Idlv,c),"Y",plain(Vspc,Ispc,c),"Y",coupang(c,"buy"),"Y",coupang(c,"consumer"),"Y",chain(c,1),"Y",chain(c,2),"Y"]);});
     var dataEnd=2+order.length;aoa.push([]);aoa.push(["다운로드 날짜: "+iso]);
     var ws=XLSX.utils.aoa_to_sheet(aoa);
     ws["!cols"]=head.map(function(h){if(h==="품목명")return {wch:46};if(h==="품목코드")return {wch:14};if(h==="부가세포함여부")return {wch:13};return {wch:22};});
