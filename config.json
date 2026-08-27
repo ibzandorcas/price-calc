@@ -14,9 +14,15 @@
         "40HC": 9000,
         "LCL": 0
       },
-      "autoPort": "YiWu",
+      "autoPort": "ShanTou",
       "cur": "RMB",
-      "cif": true
+      "cif": true,
+      "autoPorts": {
+        "20FT": "ShanTou",
+        "40FT": "ShanTou",
+        "40HC": "ShanTou",
+        "LCL": ""
+      }
     },
     "profiles": [
       {
