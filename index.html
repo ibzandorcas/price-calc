@@ -1617,7 +1617,7 @@
           var dup=state[SV.key].some(function(s){return (r.code||"")!==""&&s.code===r.code&&s.costMode===mode;});
           if(dup)return;
           var o={};for(var k in r){if(k!=="id"&&k!=="pick")o[k]=r[k];}
-          o.id=nid();o.costMode=mode;supplyDefaults(SV,o);state[SV.key].push(o);any=true;
+          o.id=nid();o.costMode=mode;o.srcQty=n(r.qty)||0;supplyDefaults(SV,o);state[SV.key].push(o);any=true;
         });
         if(any)added++;
       });
@@ -1676,11 +1676,15 @@
   var panelFCL=makePanel(FCL),panelLCL=makePanel(LCL),panelMIX=makePanel(MIX),panelSOLO=makePanel(SOLO);
   function repaintAllProducts(){panelFCL.repaint();panelLCL.repaint();panelMIX.repaint();panelSOLO.repaint();renderSupplyAll();}
   function baseCostVal(s){
-    var src=null,code=s.code||"";
-    if(code!==""){var list=(s.costMode==="lcl")?state.productsLcl:((s.costMode==="fclmix")?state.productsFclMix:((s.costMode==="fclsolo")?state.productsFclSolo:state.products));
-      list.forEach(function(p){if((p.code||"")===code)src=p;});}
+    var src=null,code=(s.code||"").trim(),nm=(s.name||"").trim();
+    var list=(s.costMode==="lcl")?state.productsLcl:((s.costMode==="fclmix")?state.productsFclMix:((s.costMode==="fclsolo")?state.productsFclSolo:state.products));
+    if(code!=="")list.forEach(function(p){if((p.code||"").trim()===code)src=p;});
+    if(!src&&code===""&&nm!=="")list.forEach(function(p){if((p.name||"").trim()===nm)src=p;});
     var r=src||s;
-    return (s.costMode==="lcl"?costOfLcl:(s.costMode==="fclmix"?costOfFclMix:(s.costMode==="fclsolo"?costOfFclSolo:costOf)))(r,r.port,r.container).total;}
+    var qm=(s.costMode==="lcl"||s.costMode==="fclmix"||s.costMode==="fclsolo");
+    var q=qm?n(r.qty):0;
+    if(qm&&!(q>0))q=n(s.srcQty)||1000;
+    return (s.costMode==="lcl"?costOfLcl:(s.costMode==="fclmix"?costOfFclMix:(s.costMode==="fclsolo"?costOfFclSolo:costOf)))(r,r.port,r.container,qm?q:undefined).total;}
   function chainPrice2(code){
     if(!code)return null;var f=null;
     state.supplyDsHd.forEach(function(x){if((x.code||"")!==""&&x.code===code)f=x;});
@@ -1739,11 +1743,11 @@
     if(o.extra===undefined)o.extra=false;
     o.margin=30;o.margin2=30;o.discount=SV.retail?10:0;
     if(SV.group){o.groupMargin=30;o.groupManualSup=false;}
-    if(SV.gnew){o.fee2=0;o.qty=0;}
-    if(SV.gven){o.qty=0;}
-    if(SV.spec){o.qty=0;}
+    if(SV.gnew){o.fee2=0;o.salesQty=0;}
+    if(SV.gven){o.salesQty=0;}
+    if(SV.spec){o.salesQty=0;}
     o.method=SV.online?"택배단품":(isDlvTab(SV.key)?"택배":"화물");o.courierTier=autoTier(o.method==="택배"?o.girth:o.girthIn);
-    if(SV.online){o.ad=0;o.fee=SV.defFee;o.coupon=SV.defCoupon;if(SV.gnew){o.fee2=0;o.qty=0;o.manualSup=true;}if(SV.gven){o.qty=0;o.manualSup=true;}
+    if(SV.online){o.ad=0;o.fee=SV.defFee;o.coupon=SV.defCoupon;if(SV.gnew){o.fee2=0;o.salesQty=0;o.manualSup=true;}if(SV.gven){o.salesQty=0;o.manualSup=true;}
       if(SV.buy){o.consumer=n(o.prevConsumer);if(n(o.coupangBuy)>0){o.manualSup=true;o.supplyVal=n(o.coupangBuy);}}
       else if(n(o.prevConsumer)>0){o.manualSup=true;o.supplyVal=n(o.prevConsumer);}}
     if(SV.buy){o.margin=40;o.method="파렛트";o.fee=0;}
@@ -1982,7 +1986,7 @@
       spQtyEl.style.cssText="min-width:64px;width:80px;text-align:right;";spQtyEl.title="수량 (개)";
       spQtyTd.appendChild(spQtyEl);
       spQtyEl.addEventListener("input",function(){moneyIn(spQtyEl);});
-      spQtyEl.addEventListener("change",function(){s.qty=moneyIn(spQtyEl);refresh("spqty");});
+      spQtyEl.addEventListener("change",function(){s.salesQty=moneyIn(spQtyEl);refresh("spqty");});
       tdSpRev=calc("expc total");tdSpProfit=calc("expc total");
     }
     var couponEl,adEl,feeEl,couponTd,adTd,feeTd,fee2Td,fee2El,qtyTd,qtyEl,qtyTd2,qtyEl2,qtyTd3,qtyEl3,tdInfAmt,tdExp1,tdExp2,tdExp3,tdGP2,tdGR2;
@@ -1997,7 +2001,7 @@
         tdInfAmt=calc("expc");tdExp1=calc("expc total");tdExp2=calc("expc total");
         function qtyBox(){var td=document.createElement("td");td.className="expc";var inp=document.createElement("input");inp.type="text";inp.inputMode="numeric";inp.className="cell-in";inp.style.minWidth="60px";inp.style.width="76px";inp.style.textAlign="right";inp.title="수량 (개) — 두 칸은 같은 값으로 연동됩니다";td.appendChild(inp);
           inp.addEventListener("input",function(){moneyIn(inp);});
-          inp.addEventListener("change",function(){s.qty=moneyIn(inp);refresh("qty:"+(inp===qtyEl?"1":"2"));});
+          inp.addEventListener("change",function(){s.salesQty=moneyIn(inp);refresh("qty:"+(inp===qtyEl?"1":"2"));});
           return {td:td,inp:inp};}
         var _q1=qtyBox();qtyTd=_q1.td;qtyEl=_q1.inp;var _q2=qtyBox();qtyTd2=_q2.td;qtyEl2=_q2.inp;
       } else if(SV.gven){
@@ -2006,7 +2010,7 @@
         tdGP2=calc();tdGR2=calc();
         function qtyBoxV(){var td=document.createElement("td");td.className="expc";var inp=document.createElement("input");inp.type="text";inp.inputMode="numeric";inp.className="cell-in";inp.style.minWidth="60px";inp.style.width="76px";inp.style.textAlign="right";inp.title="수량 (개) — 세 칸은 같은 값으로 연동됩니다";td.appendChild(inp);
           inp.addEventListener("input",function(){moneyIn(inp);});
-          inp.addEventListener("change",function(){s.qty=moneyIn(inp);refresh("qty:"+(inp===qtyEl?"1":(inp===qtyEl2?"2":"3")));});
+          inp.addEventListener("change",function(){s.salesQty=moneyIn(inp);refresh("qty:"+(inp===qtyEl?"1":(inp===qtyEl2?"2":"3")));});
           return {td:td,inp:inp};}
         var _v1=qtyBoxV();qtyTd=_v1.td;qtyEl=_v1.inp;var _v2=qtyBoxV();qtyTd2=_v2.td;qtyEl2=_v2.inp;var _v3=qtyBoxV();qtyTd3=_v3.td;qtyEl3=_v3.inp;
       } else {var _a=feeInp("ad");adTd=_a.td;adEl=_a.inp;var _f=feeInp("fee");feeTd=_f.td;feeEl=_f.inp;}}
@@ -2035,7 +2039,7 @@
         return;
       }
       if(SV.gven){
-        var vcost=supplyCostVal(SV,s),vdom=domesticUnit(s)*1.1,VC=vcost*1.1,vq=n(s.qty);
+        var vcost=supplyCostVal(SV,s),vdom=domesticUnit(s)*1.1,VC=vcost*1.1,vq=n(s.salesQty);
         var vbase=VC,vsup;
         if(s.groupManualSup){vsup=n(s.groupSupply);s.groupMargin=(vbase>0&&vsup>0)?Math.round((1-vbase/vsup)*1000)/10:0;}
         else{var vgm=n(s.groupMargin);vsup=(vgm>=0&&vgm<100)?vbase/(1-vgm/100):0;s.groupSupply=vsup;}
@@ -2067,7 +2071,7 @@
         var gcost=supplyCostVal(SV,s),gdom=domesticUnit(s);
         var C=gcost*1.1,A=n(s.ad),fI=n(s.fee)/100,fP=n(s.fee2)/100,fT=fI+fP,gdisc=n(s.discount);
         var P=n(s.supplyVal),D=P*(1-gdisc/100);
-        var gq=n(s.qty),adUnit=gq>0?A/gq:0;
+        var gq=n(s.salesQty),adUnit=gq>0?A/gq:0;
         var gpInc=D*(1-fT)-adUnit-C,gprofit=gpInc/1.1,grate=D>0?gpInc/D*100:0;
         s.margin=Math.round(grate*10)/10;
         var infAmt=D*fI,exp1=gq*infAmt,exp2=gq*gprofit;
@@ -2122,7 +2126,7 @@
           _ov=_ov*(1-n(_or.discount)/100);}
         if(_ov>0){_oe.textContent=won(_ov*vf);_oe.style.color="";}else{_oe.textContent="—";_oe.style.color="var(--muted)";}}
       if(spec&&spQtyEl){
-        var _q=n(s.qty),_rev=_q*sup,_pf=_q*profit;
+        var _q=n(s.salesQty),_rev=_q*sup,_pf=_q*profit;
         if(skip!=="spqty")spQtyEl.value=_q>0?moneyFmt(_q):"";
         tdSpRev.querySelector(".num").textContent=won(_rev*vf);
         var _pe=tdSpProfit.querySelector(".num");_pe.textContent=won(_pf*vf);_pe.style.color=_pf<0?"var(--danger)":"";
@@ -2271,11 +2275,11 @@
             var _oc2=supplyCostVal(_Vr2,_or2),_od2=domesticUnit(_or2),_om2=n(_or2.margin);
             _ov2=_or2.manualSup?n(_or2.supplyVal):((_om2>=0&&_om2<100)?(_oc2+_od2)/(1-_om2/100):0);
             _ov2=_ov2*(1-n(_or2.discount)/100);}
-          aoa.push([s.code||"",s.name||"",Math.round(cost),_ov2>0?Math.round(_ov2):"",Math.round(pc0),cg0,m,Math.round(sp),Math.round(ps0),cs0,Math.round(vsp),Math.round(pf),rt,n(s.qty),Math.round(n(s.qty)*sp),Math.round(n(s.qty)*pf),dv>0?Math.round(dv):"",dvr,cn>0?Math.round(cn):"",dfr,method,tier,Math.round(dom)]);}
+          aoa.push([s.code||"",s.name||"",Math.round(cost),_ov2>0?Math.round(_ov2):"",Math.round(pc0),cg0,m,Math.round(sp),Math.round(ps0),cs0,Math.round(vsp),Math.round(pf),rt,n(s.salesQty),Math.round(n(s.salesQty)*sp),Math.round(n(s.salesQty)*pf),dv>0?Math.round(dv):"",dvr,cn>0?Math.round(cn):"",dfr,method,tier,Math.round(dom)]);}
         else if(SV.chain){var s1=s.manualSup?n(s.supplyVal):((m>=0&&m<100)?cost/(1-m/100):0),mg2=n(s.margin2),s2=s.manualSup2?n(s.supplyVal2):((mg2>=0&&mg2<100)?s1/(1-mg2/100):0);
           var cp1=s1-cost,cr1=s1>0?Math.round(cp1/s1*1000)/10:0,cp2=s2-s1,cr2=s2>0?Math.round(cp2/s2*1000)/10:0;
           aoa.push([s.code||"",s.name||"",Math.round(cost),m,Math.round(s1),Math.round(cp1),Math.round(s1*1.1),mg2,Math.round(s2),Math.round(cp2),Math.round(s2*1.1)]);}
-        else if(SV.gven){var vC=cost*1.1,vdomE=dom*1.1,vq=n(s.qty),vgm=n(s.groupMargin);
+        else if(SV.gven){var vC=cost*1.1,vdomE=dom*1.1,vq=n(s.salesQty),vgm=n(s.groupMargin);
           var vsup=s.groupManualSup?n(s.groupSupply):((vgm>=0&&vgm<100)?vC/(1-vgm/100):0);
           var vgmE=s.groupManualSup?((vC>0&&vsup>0)?Math.round((1-vC/vsup)*1000)/10:0):vgm;
           var vp1=vsup-vdomE-vC,vr1=vsup>0?Math.round(vp1/vsup*1000)/10:0;
@@ -2283,7 +2287,7 @@
           var vp2=vD-vInf-vsup,vr2=vD>0?Math.round(vp2/vD*1000)/10:0;
           aoa.push([s.code||"",s.name||"",Math.round(vC),vgmE,Math.round(vsup),Math.round(vp1),vr1,vq,Math.round(vq*vp1),n(s.fee),Math.round(vInf),Math.round(vq*vInf),Math.round(vP),disc,Math.round(vD),Math.round(vp2),vr2,Math.round(vq*vp2),method,tier,Math.round(vdomE)]);}
         else if(SV.gnew){var gC=cost*1.1,gA=n(s.ad),gfI=n(s.fee)/100,gfP=n(s.fee2)/100,gfT=gfI+gfP;
-          var gP=n(s.supplyVal),gD=gP*(1-disc/100),gQty=n(s.qty),gAdU=gQty>0?gA/gQty:0;
+          var gP=n(s.supplyVal),gD=gP*(1-disc/100),gQty=n(s.salesQty),gAdU=gQty>0?gA/gQty:0;
           var gpInc=gD*(1-gfT)-gAdU-gC,gprofit=gpInc/1.1,grate=gD>0?Math.round(gpInc/gD*1000)/10:0;
           var gInf=gD*gfI;
           aoa.push([s.code||"",s.name||"",Math.round(gC),Math.round(gA),n(s.fee),Math.round(gInf),gQty,Math.round(gQty*gInf),n(s.fee2),Math.round(gP),disc,Math.round(gD),Math.round(gprofit),grate,Math.round(gQty*gprofit),method,tier,Math.round(dom*1.1)]);}
