@@ -458,7 +458,7 @@
       </table>
     </div>
     <div class="footnote">
-      <p><b>공급단가 = (원가 + 국내운반비) ÷ (1 − 마진율)</b> — 운반비는 우리가 부담하는 비용이라 원가에 합쳐 마진을 잡습니다. 따라서 마진율 30%를 넣으면 <b>운반비까지 반영된 최종 이익률이 30%</b>가 됩니다. <b>할인 공급단가 = 공급단가 × (1 − 할인율)</b>, <b>이익금 = 할인 공급단가 − (원가 + 운반비)</b>. 국내운반비는 자동 계산되지만 직접 입력할 수도 있습니다. 부가세 포함 공급단가는 <b>할인 공급단가 × 1.1</b>(운반비 미포함)이며, 소비자가 대비 이익률은 거래처가 가져가는 마진이라 이 금액을 기준으로 계산합니다. 운송방식(택배/화물/파렛트)을 고르면 국내운반비가 계산되고, 택배는 박스 세 변 합으로 단계가 자동 지정됩니다(수동 변경 가능). 운반비 단가는 '운임 설정(국내)'에서 조정합니다.</p>
+      <p><b>공급단가 = (원가 + 국내운반비) ÷ (1 − 마진율)</b> — 운반비는 우리가 부담하는 비용이라 원가에 합쳐 마진을 잡습니다. 따라서 마진율 30%를 넣으면 <b>운반비까지 반영된 최종 이익률이 30%</b>가 됩니다. <b>할인 공급단가 = 공급단가 × (1 − 할인율)</b>, <b>이익금 = 할인 공급단가 − (원가 + 운반비)</b>. 국내운반비는 자동 계산되지만 직접 입력할 수도 있습니다. 부가세 포함 공급단가는 <b>할인 공급단가 × 1.1</b>(운반비 미포함)이며, 소비자가 대비 이익률은 거래처가 가져가는 마진이라 이 금액을 기준으로 계산합니다. 운송방식(택배/화물/파렛트)을 고르면 국내운반비가 계산되고, 택배는 박스 세 변 합으로 단계가 자동 지정됩니다(수동 변경 가능). 운반비 단가는 '운임 설정(국내)'에서 조정합니다. <b>기본 공급단가 = 오프라인 공급단가 + 국내운반비(택배비)</b>로 자동 설정됩니다 — 그라첸(오프라인_택배)은 그라첸(오프라인), 핸든(오프라인_택배)은 핸든(오프라인) 단가를 기준으로 하며, 오프라인 단가나 운반비가 바뀌면 함께 갱신됩니다. 공급단가를 직접 입력하면 그 값이 고정되고(자동 갱신 중단), 빈칸(0)으로 지우면 다시 기본값으로 돌아갑니다. 기존공급단가 열은 데이터 파일의 <b>출고단가(택배발송)</b>를 우선 표시합니다.</p>
     </div>
   </section>
   <section class="panel" id="panel-supplyGrSpecial">
@@ -627,7 +627,7 @@
       </table>
     </div>
     <div class="footnote">
-      <p><b>공급단가 = (원가 + 국내운반비) ÷ (1 − 마진율)</b> — 운반비는 우리가 부담하는 비용이라 원가에 합쳐 마진을 잡습니다. 따라서 마진율 30%를 넣으면 <b>운반비까지 반영된 최종 이익률이 30%</b>가 됩니다. <b>할인 공급단가 = 공급단가 × (1 − 할인율)</b>, <b>이익금 = 할인 공급단가 − (원가 + 운반비)</b>. 국내운반비는 자동 계산되지만 직접 입력할 수도 있습니다. 부가세 포함 공급단가는 <b>할인 공급단가 × 1.1</b>(운반비 미포함)이며, 소비자가 대비 이익률은 거래처가 가져가는 마진이라 이 금액을 기준으로 계산합니다. 운송방식(택배/화물/파렛트)을 고르면 국내운반비가 계산되고, 택배는 박스 세 변 합으로 단계가 자동 지정됩니다(수동 변경 가능). 운반비 단가는 '운임 설정(국내)'에서 조정합니다.</p>
+      <p><b>공급단가 = (원가 + 국내운반비) ÷ (1 − 마진율)</b> — 운반비는 우리가 부담하는 비용이라 원가에 합쳐 마진을 잡습니다. 따라서 마진율 30%를 넣으면 <b>운반비까지 반영된 최종 이익률이 30%</b>가 됩니다. <b>할인 공급단가 = 공급단가 × (1 − 할인율)</b>, <b>이익금 = 할인 공급단가 − (원가 + 운반비)</b>. 국내운반비는 자동 계산되지만 직접 입력할 수도 있습니다. 부가세 포함 공급단가는 <b>할인 공급단가 × 1.1</b>(운반비 미포함)이며, 소비자가 대비 이익률은 거래처가 가져가는 마진이라 이 금액을 기준으로 계산합니다. 운송방식(택배/화물/파렛트)을 고르면 국내운반비가 계산되고, 택배는 박스 세 변 합으로 단계가 자동 지정됩니다(수동 변경 가능). 운반비 단가는 '운임 설정(국내)'에서 조정합니다. <b>기본 공급단가 = 오프라인 공급단가 + 국내운반비(택배비)</b>로 자동 설정됩니다 — 그라첸(오프라인_택배)은 그라첸(오프라인), 핸든(오프라인_택배)은 핸든(오프라인) 단가를 기준으로 하며, 오프라인 단가나 운반비가 바뀌면 함께 갱신됩니다. 공급단가를 직접 입력하면 그 값이 고정되고(자동 갱신 중단), 빈칸(0)으로 지우면 다시 기본값으로 돌아갑니다. 기존공급단가 열은 데이터 파일의 <b>출고단가(택배발송)</b>를 우선 표시합니다.</p>
     </div>
   </section>
   <section class="panel" id="panel-supplyOnline">
@@ -1762,17 +1762,10 @@
       if(_hb!=null&&_hb>0){o.manualSup=true;o.supplyVal=_hb;}
     }
     if(isDlvTab(SV.key)){
-      var _cu=courierUnit(o);
-      if(n(o.prevSupplyDlv)>0){o.manualSup=true;o.supplyVal=n(o.prevSupplyDlv)/1.1;}
-      else{
-        var _b=offlineSupplyVal((SV.key==="supplyDlv")?"supply":"supplyDlv",o.code);
-        if(_b!=null&&_b>0&&SV.key==="supplyHdDlv"){o.manualSup=true;o.supplyVal=_b;}
-        else{
-          if(_b==null)_b=offlineSupplyVal("supply",o.code);
-          if(_b==null&&n(o.prevSupply)>0)_b=n(o.prevSupply)/1.1;
-          if(_b!=null&&_b>0){o.manualSup=true;o.supplyVal=_b+_cu;}
-        }
-      }
+      o.dlvAuto=true;
+      var _b=dlvBaseVal(SV,o);
+      if(_b!=null){o.manualSup=true;o.supplyVal=_b;}
+      else if(n(o.prevSupplyDlv)>0){o.manualSup=true;o.supplyVal=n(o.prevSupplyDlv)/1.1;}
     }
     return o;}
   function courierUnit(o){
@@ -1786,6 +1779,16 @@
     if(row.manualSup)return n(row.supplyVal);
     var cost=supplyCostVal(V,row),dom=domesticUnit(row),m=n(row.margin);
     return (m>=0&&m<100)?(cost+dom)/(1-m/100):0;}
+  function dlvSrcKey(k){return k==="supplyHdDlv"?"supplyHd":"supply";}
+  function dlvBaseVal(SV,o){
+    var b=offlineSupplyVal(dlvSrcKey(SV.key),o.code);
+    if(!(n(b)>0)&&SV.key==="supplyHdDlv")b=offlineSupplyVal("supply",o.code);
+    if(!(n(b)>0)&&n(o.prevSupply)>0)b=n(o.prevSupply)/1.1;
+    if(!(n(b)>0))return null;
+    return n(b)+domesticUnit(o);}
+  function renderDlvViews(){SUP_VIEWS.forEach(function(V){if(isDlvTab(V.key))renderSupply(V);});}
+  function prevSupOf(SV,s){if(SV.buy)return n(s.coupangBuy);if(SV.online)return n(s.prevConsumer);
+    if(isDlvTab(SV.key)&&n(s.prevSupplyDlv)>0)return n(s.prevSupplyDlv);return n(s.prevSupply);}
   function snapshotState(){var snap={v:2,savedAt:new Date().toISOString(),rates:state.rates,freight:state.freight,domestic:state.domestic,products:state.products,productsLcl:state.productsLcl};SUP_DEFS.forEach(function(d){snap[d.key]=state[d.key];});return snap;}
   function unifiedExport(){
     if(!window.XLSX){alert("Excel 라이브러리를 불러오지 못했습니다.");return;}
@@ -1960,7 +1963,7 @@
     var _refF=document.body.classList.contains("vat-incl-only")?1:(1/1.1);
     var tdPrev=(online||chain)?null:prevCell(s.prevCost*_refF);
     var tdChgC=(online||chain)?null:calc("refc");
-    var tdPrevSup=prevCell((SV.buy?s.coupangBuy:(online?s.prevConsumer:s.prevSupply))*_refF);
+    var tdPrevSup=prevCell(prevSupOf(SV,s)*_refF);
     var meth=selEl();["택배단품","택배","화물","파렛트","별도"].forEach(function(m){var o=document.createElement("option");o.value=m;o.textContent=(m==="파렛트"?"화물(파렛트)":(m==="택배단품"?"택배(단품)":m));meth.appendChild(o);});meth.value=s.method||(online?"택배단품":(isDlvTab(SV.key)?"택배":"화물"));
     var tier=selEl();
     function fillTier(){tier.innerHTML="";var o0=document.createElement("option");o0.value="";o0.textContent="-";tier.appendChild(o0);state.domestic.courier.tiers.forEach(function(t){var o=document.createElement("option");o.value=t.name;o.textContent=t.name;tier.appendChild(o);});tier.value=s.courierTier||"";}
@@ -1976,7 +1979,7 @@
     if(spec){consTd=document.createElement("td");consEl=document.createElement("input");consEl.type="text";consEl.inputMode="numeric";consEl.className="cell-in";consEl.style.minWidth="80px";consEl.style.width="98px";consEl.style.textAlign="right";consEl.title="소비자가 (데이터에서 불러옴, 수정 가능)";consTd.appendChild(consEl);
       tdDiff=calc();tdDiffR=calc();
       delTd=document.createElement("td");delEl=document.createElement("input");delEl.type="text";delEl.inputMode="numeric";delEl.className="cell-in";delEl.style.minWidth="80px";delEl.style.width="98px";delEl.style.textAlign="right";delEl.title="거래처 납품가 (부가세 포함)";delTd.appendChild(delEl);tdDelR=calc();}
-    var supTd=document.createElement("td");var supEl=document.createElement("input");supEl.type="text";supEl.inputMode="numeric";supEl.className="cell-in";supEl.style.minWidth="80px";supEl.style.width="98px";supEl.style.fontWeight="700";supEl.style.textAlign="right";supEl.title=(online?"소비자가":"공급단가")+" 직접 입력 — 마진율 자동 역산";supTd.appendChild(supEl);
+    var supTd=document.createElement("td");var supEl=document.createElement("input");supEl.type="text";supEl.inputMode="numeric";supEl.className="cell-in";supEl.style.minWidth="80px";supEl.style.width="98px";supEl.style.fontWeight="700";supEl.style.textAlign="right";supEl.title=isDlvTab(SV.key)?"기본값 = 오프라인 공급단가 + 국내운반비(택배비) — 직접 입력하면 그 값이 고정되고 마진율이 역산됩니다. 빈칸(0)으로 두면 기본값으로 되돌아갑니다.":((online?"소비자가":"공급단가")+" 직접 입력 — 마진율 자동 역산");supTd.appendChild(supEl);
     var methTd=document.createElement("td");methTd.appendChild(meth);var tierTd=document.createElement("td");tierTd.appendChild(tier);
     var tdOffSup=spec?calc():null;
     var spQtyTd=null,spQtyEl=null,tdSpRev=null,tdSpProfit=null;
@@ -2090,6 +2093,7 @@
         return;
       }
       var cost=supplyCostVal(SV,s),dom=domesticUnit(s),sup,disc=n(s.discount);
+      if(isDlvTab(SV.key)&&s.dlvAuto===true){var _dbv=dlvBaseVal(SV,s);if(_dbv!=null){s.manualSup=true;s.supplyVal=_dbv;}}
       if(online){var _cpx=n(s.coupon)/1.1,_fr=(n(s.ad)+n(s.fee))/100;
         if(s.manualSup){sup=n(s.supplyVal);var _rvM=sup*(1-disc/100)/1.1,_pfM=_rvM-cost-dom-_cpx-_rvM*_fr;s.margin=_rvM>0?Math.round((_pfM/_rvM)*1000)/10:0;}
         else{var m=n(s.margin),_Kd=1-m/100-_fr;var _rvT=_Kd>0?(cost+dom+_cpx)/_Kd:0;sup=(1-disc/100)>0?_rvT*1.1/(1-disc/100):0;s.supplyVal=sup;}}
@@ -2144,15 +2148,15 @@
         else{var gm=n(s.groupMargin);gsup=(gm>=0&&gm<100)?gbase/(1-gm/100):0;s.groupSupply=gsup;}
         if(gmi&&skip!=="gmargin")gmi.value=pctFmt(s.groupMargin);
         if(gsupEl&&skip!=="gsup")gsupEl.value=gsup>0?moneyFmt(gsup):"";}
-      var pvv=SV.buy?n(s.coupangBuy):(online?n(s.prevConsumer):n(s.prevSupply)),cc=tdChgS.querySelector(".num");
+      var pvv=prevSupOf(SV,s),cc=tdChgS.querySelector(".num");
       if(pvv>0){var chS=((online?sup:sup*1.1)-pvv)/pvv*100;cc.textContent=(chS>0?"+":"")+(Math.round(chS*10)/10).toLocaleString("ko-KR")+"%";cc.style.color=chS>0?"var(--accent)":(chS<0?"var(--danger)":"");}
       else{cc.textContent="—";cc.style.color="var(--muted)";}}
-    meth.addEventListener("change",function(){s.domManual=false;s.method=meth.value;if(s.method==="택배"||s.method==="택배단품"){s.courierTier=autoTier(s.method==="택배단품"?s.girthIn:s.girth);tier.value=s.courierTier||"";}syncTier();refresh();});
-    tier.addEventListener("change",function(){s.domManual=false;s.courierTier=tier.value;refresh();});
-    if(domEl){domEl.addEventListener("input",function(){moneyIn(domEl);});domEl.addEventListener("change",function(){s.domManual=true;s.domVal=moneyIn(domEl);refresh("dom");});}
-    mi.addEventListener("change",function(){s.margin=pctIn(mi);s.manualSup=false;refresh("margin");if(chain)renderHdViews();});
+    meth.addEventListener("change",function(){s.domManual=false;s.method=meth.value;if(s.method==="택배"||s.method==="택배단품"){s.courierTier=autoTier(s.method==="택배단품"?s.girthIn:s.girth);tier.value=s.courierTier||"";}syncTier();refresh();if(SV.key==="supply"||SV.key==="supplyHd")renderDlvViews();});
+    tier.addEventListener("change",function(){s.domManual=false;s.courierTier=tier.value;refresh();if(SV.key==="supply"||SV.key==="supplyHd")renderDlvViews();});
+    if(domEl){domEl.addEventListener("input",function(){moneyIn(domEl);});domEl.addEventListener("change",function(){s.domManual=true;s.domVal=moneyIn(domEl);refresh("dom");if(SV.key==="supply"||SV.key==="supplyHd")renderDlvViews();});}
+    mi.addEventListener("change",function(){s.margin=pctIn(mi);s.manualSup=false;if(isDlvTab(SV.key))s.dlvAuto=false;refresh("margin");if(chain)renderHdViews();if(SV.key==="supply"||SV.key==="supplyHd")renderDlvViews();});
     supEl.addEventListener("input",function(){moneyIn(supEl);});
-    supEl.addEventListener("change",function(){s.manualSup=true;var _v=moneyIn(supEl),_vi2=document.body.classList.contains("vat-incl-only"),_df=(SV.gnew||SV.gven)?1:(online?(_vi2?1:(1/1.1)):(_vi2?1.1:1));s.supplyVal=_df?_v/_df:_v;refresh("sup");if(chain)renderHdViews();if(online&&!buy)syncConsumer(SV.key,s.code,s.supplyVal);});
+    supEl.addEventListener("change",function(){s.manualSup=true;var _v=moneyIn(supEl),_vi2=document.body.classList.contains("vat-incl-only"),_df=(SV.gnew||SV.gven)?1:(online?(_vi2?1:(1/1.1)):(_vi2?1.1:1));s.supplyVal=_df?_v/_df:_v;if(isDlvTab(SV.key))s.dlvAuto=(_v<=0);refresh("sup");if(chain)renderHdViews();if(SV.key==="supply"||SV.key==="supplyHd")renderDlvViews();if(online&&!buy)syncConsumer(SV.key,s.code,s.supplyVal);});
     di.addEventListener("change",function(){s.discount=pctIn(di);refresh();});
     if(hasCons){consEl2.addEventListener("input",function(){moneyIn(consEl2);});consEl2.addEventListener("change",function(){s.consumer=moneyIn(consEl2);refresh("cons2");syncConsumer(SV.key,s.code,s.consumer);});}
     if(spec){delEl.addEventListener("input",function(){moneyIn(delEl);});delEl.addEventListener("change",function(){s.deliver=moneyIn(delEl);refresh("dlv");});
@@ -2300,7 +2304,7 @@
             arr=[s.code||"",s.name||"",Math.round(cost*1.1),m,Math.round(sup),Math.round(pvv),chg,Math.round(profit),rate,cnb>0?Math.round(cnb):"",rrb,method,tier,Math.round(dom*1.1),n(s.coupon),n(s.ad),n(s.fee)];}
           else arr=[s.code||"",s.name||"",Math.round(cost*1.1),(cost*1.1>0?Math.round(sup/(cost*1.1)*1000)/1000:""),m,Math.round(sup),Math.round(pvv),chg,disc,Math.round(dsup),Math.round(profit),rate,method,tier,Math.round(dom*1.1),n(s.coupon),n(s.ad),n(s.fee)];
           aoa.push(arr);}
-        else{var profit2=dsup-(cost+dom),rate2=dsup>0?Math.round(profit2/dsup*1000)/10:0,pvs=n(s.prevSupply),chg2=pvs>0?Math.round((sup*1.1-pvs)/pvs*1000)/10:"",pvc2=n(s.prevCost),chgc=pvc2>0?Math.round((cost*1.1-pvc2)/pvc2*1000)/10:"";
+        else{var profit2=dsup-(cost+dom),rate2=dsup>0?Math.round(profit2/dsup*1000)/10:0,pvs=prevSupOf(SV,s),chg2=pvs>0?Math.round((sup*1.1-pvs)/pvs*1000)/10:"",pvc2=n(s.prevCost),chgc=pvc2>0?Math.round((cost*1.1-pvc2)/pvc2*1000)/10:"";
           var base=SV.retail?[s.code||"",s.name||"",Math.round(cost),Math.round(pvc2),chgc,m,Math.round(sup),Math.round(pvs),chg2,disc,Math.round(dsup),Math.round(dsup*1.1),Math.round(profit2),rate2]
                              :[s.code||"",s.name||"",Math.round(cost),Math.round(pvc2),chgc,m,Math.round(sup),Math.round(pvs),chg2,disc,Math.round(dsup),Math.round(profit2),rate2,Math.round(dsup*1.1)];
           if(SV.retail){var cn2=n(s.consumer),vs2=dsup*1.1,rr2=(cn2>0&&vs2>0)?Math.round((cn2-vs2)/cn2*1000)/10:"";base.push(cn2>0?Math.round(cn2):"",rr2);}
