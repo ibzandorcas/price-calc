@@ -219,6 +219,8 @@
   .xm-src input{border:1px solid var(--line-strong);border-radius:6px;padding:5px 8px;font:inherit;font-size:12px;background:var(--input-bg);width:130px;margin-left:4px;}
   .xm-bd tr.xm-hr th{height:40px;line-height:1.35;}
   .xm-bd td.nmc{padding-left:18px;}
+  .xm-seg{display:flex;gap:5px;align-items:center;font-size:11.5px;color:var(--muted);}
+  .xm-seg .btn{padding:5px 11px;font-size:12px;}
   .xm-stat{font-size:12px;color:var(--muted);}
 </style>
 </head>
@@ -2838,8 +2840,8 @@
   })();
   /* ===== 거래처 발송용 단가리스트 (이미지 첨부) ===== */
   var IMGCFG_KEY="hendon_imgsrc_v1";
-  var IMGCFG={dir:"images/",zip:"images.zip"};
-  try{var _icRaw=localStorage.getItem(IMGCFG_KEY);if(_icRaw){var _ic=JSON.parse(_icRaw);if(_ic&&_ic.dir!=null)IMGCFG.dir=String(_ic.dir);if(_ic&&_ic.zip!=null)IMGCFG.zip=String(_ic.zip);}}catch(e){}
+  var IMGCFG={dir:"images/",zip:"images.zip",vat:"excl"};
+  try{var _icRaw=localStorage.getItem(IMGCFG_KEY);if(_icRaw){var _ic=JSON.parse(_icRaw);if(_ic&&_ic.dir!=null)IMGCFG.dir=String(_ic.dir);if(_ic&&_ic.zip!=null)IMGCFG.zip=String(_ic.zip);if(_ic&&(_ic.vat==="incl"||_ic.vat==="excl"))IMGCFG.vat=_ic.vat;}}catch(e){}
   function saveImgCfg(){try{localStorage.setItem(IMGCFG_KEY,JSON.stringify(IMGCFG));}catch(e){}}
   var IMGX=["jpg","jpeg","png","webp","gif"];
   var imgCache={},zipIndex=null,zipFrom=null,dirExtHit=null;
@@ -2930,10 +2932,12 @@
       .catch(function(){imgCache[key]=null;return null;});}
   function sendPrice(SV,s){
     var disc=n(s.discount);
-    if(SV.chain)return n(s.supplyVal2)*1.1;
-    if(SV.group)return n(s.groupSupply);
-    if(SV.online)return n(s.supplyVal)*(1-disc/100);
-    return n(s.supplyVal)*(1-disc/100)*1.1;}
+    if(SV.chain)return n(s.supplyVal2);
+    if(SV.group)return n(s.groupSupply)/1.1;
+    if(SV.online)return n(s.supplyVal)*(1-disc/100)/1.1;
+    return n(s.supplyVal)*(1-disc/100);}
+  function vatLabel(){return IMGCFG.vat==="incl"?"(VAT 포함)":"(VAT 별도)";}
+  function sendPriceOut(SV,s){return sendPrice(SV,s)*(IMGCFG.vat==="incl"?1.1:1);}
   function methodLabel(m){return m==="파렛트"?"화물(파렛트)":(m==="택배단품"?"택배(단품)":(m||""));}
   function esc(v){return String(v==null?"":v).replace(/[&<>"]/g,function(c){return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c];});}
   function sendFileName(SV,ext){
@@ -2956,6 +2960,8 @@
       +'<label>이미지 폴더 <input id="xmDir" type="text" placeholder="images/"></label>'
       +'<label>ZIP <input id="xmZip" type="text" placeholder="images.zip"></label>'
       +'<button class="btn" id="xmLoad">이미지 불러오기</button></div>'
+      +'<div class="xm-seg" id="xmVat"><span>공급단가</span>'
+      +'<button class="btn" data-v="excl">부가세 별도</button><button class="btn" data-v="incl">부가세 포함</button></div>'
       +'<div class="xm-stat" id="xmStat" style="flex-basis:100%;"></div></div>'
       +'<div class="xm-bd" id="xmBody"></div>'
       +'<div class="xm-ft"><button class="btn primary" id="xmXlsx">Excel(.xlsx)로 저장</button>'
@@ -2972,13 +2978,13 @@
     document.addEventListener("keydown",function onEsc(e){if(e.key==="Escape"){close();document.removeEventListener("keydown",onEsc);}});
     function paint(){
       var h=['<table><thead><tr class="xm-hr"><th style="width:110px;">품목코드</th><th style="width:74px;">이미지</th><th>품목명</th>'
-        +'<th style="width:150px;">규격</th><th style="width:110px;">공급단가<br>(VAT 포함)</th>'
+        +'<th style="width:150px;">규격</th><th style="width:110px;">공급단가<br>'+vatLabel()+'</th>'
         +'<th style="width:82px;">배송방식</th><th style="width:180px;">적요</th></tr></thead><tbody>'];
       rows.forEach(function(r,i){
         var s=r.s,img=r.thumb===undefined?'<span class="xm-no">대기</span>':(r.thumb?'<img class="xm-thumb" src="'+r.thumb.url+'">':'<span class="xm-no">없음</span>');
         h.push('<tr><td class="c">'+esc(r.code)+'</td><td class="c">'+img+'</td><td class="nmc">'+esc(r.name)+'</td>'
           +'<td><input class="xm-in" data-k="specText" data-i="'+i+'" value="'+esc(s.specText||"")+'"></td>'
-          +'<td class="r num">'+Math.round(sendPrice(SV,s)).toLocaleString("ko-KR")+'</td>'
+          +'<td class="r num">'+Math.round(sendPriceOut(SV,s)).toLocaleString("ko-KR")+'</td>'
           +'<td class="c">'+esc(methodLabel(s.method))+'</td>'
           +'<td><input class="xm-in" data-k="note" data-i="'+i+'" value="'+esc(s.note||"")+'"></td></tr>');});
       h.push('</tbody></table>');
@@ -2999,6 +3005,11 @@
         q("xmStat").textContent="이미지 불러오는 중… "+(i+1)+"/"+rows.length;
         getThumb(rows[i].code).then(function(t){rows[i].thumb=t||null;if(t)hit++;i++;if(i%10===0)paint();step();});}
       step();}
+    function paintSeg(){box.querySelectorAll("#xmVat .btn").forEach(function(b){
+      b.classList.toggle("primary",b.dataset.v===IMGCFG.vat);});}
+    box.querySelectorAll("#xmVat .btn").forEach(function(b){
+      b.addEventListener("click",function(){IMGCFG.vat=b.dataset.v;saveImgCfg();paintSeg();paint();});});
+    paintSeg();
     q("xmLoad").addEventListener("click",function(){loadImages(true);});
     loadImages(false);
     q("xmXlsx").addEventListener("click",function(){
@@ -3015,7 +3026,7 @@
       ws.mergeCells(1,1,1,7);
       var tc=ws.getCell(1,1);tc.value=sendTitle(SV);tc.font={bold:true,size:14};tc.alignment={vertical:"middle"};
       ws.getRow(1).height=28;
-      var hd=["품목코드","이미지","품목명","규격","공급단가\n(VAT 포함)","배송방식","적요"],hr=ws.getRow(2);
+      var hd=["품목코드","이미지","품목명","규격","공급단가\n"+vatLabel(),"배송방식","적요"],hr=ws.getRow(2);
       hd.forEach(function(t,i){var c=hr.getCell(i+1);c.value=t;c.font={bold:true,size:11};
         c.alignment={vertical:"middle",horizontal:"center",wrapText:true};
         c.fill={type:"pattern",pattern:"solid",fgColor:{argb:"FFF0F2F1"}};c.border=xlBorder();});
@@ -3024,7 +3035,7 @@
         var rn=i+3,row=ws.getRow(rn),s=r.s;
         row.getCell(1).value=r.code;row.getCell(3).value=r.name;
         row.getCell(4).value=s.specText||"";
-        row.getCell(5).value=Math.round(sendPrice(SV,s));row.getCell(5).numFmt="#,##0";
+        row.getCell(5).value=Math.round(sendPriceOut(SV,s));row.getCell(5).numFmt="#,##0";
         row.getCell(6).value=methodLabel(s.method);row.getCell(7).value=s.note||"";
         for(var c=1;c<=7;c++){var cc=row.getCell(c);cc.border=xlBorder();
           cc.alignment={vertical:"middle",horizontal:(c===5?"right":((c===1||c===2||c===6)?"center":"left")),wrapText:(c===3||c===7),indent:(c===3?1:0)};}
@@ -3057,15 +3068,15 @@
       'img{max-width:78px;max-height:78px;object-fit:contain;display:block;margin:0 auto;}',
       'tr{page-break-inside:avoid;} thead{display:table-header-group;}',
       '</style></head><body>',
-      '<h1>'+esc(sendTitle(SV))+'</h1><p class="sub">작성일 '+ds+' · 총 '+rows.length+'개 품목 · 공급단가는 부가세 포함 금액입니다.</p>',
+      '<h1>'+esc(sendTitle(SV))+'</h1><p class="sub">작성일 '+ds+' · 총 '+rows.length+'개 품목 · 공급단가는 부가세 '+(IMGCFG.vat==="incl"?"포함":"별도")+' 금액입니다.</p>',
       '<table><thead><tr><th style="width:11%">품목코드</th><th style="width:88px">이미지</th><th>품목명</th>',
-      '<th style="width:15%">규격</th><th style="width:12%">공급단가<br>(VAT 포함)</th><th style="width:9%">배송방식</th><th style="width:16%">적요</th></tr></thead><tbody>'];
+      '<th style="width:15%">규격</th><th style="width:12%">공급단가<br>'+vatLabel()+'</th><th style="width:9%">배송방식</th><th style="width:16%">적요</th></tr></thead><tbody>'];
     rows.forEach(function(r){var s=r.s;
       h.push('<tr><td class="c">'+esc(r.code)+'</td>'
         +'<td class="imgc">'+(r.thumb?'<img src="'+r.thumb.url+'">':"")+'</td>'
         +'<td class="nmc">'+esc(r.name)+'</td>'
         +'<td>'+esc(s.specText||"")+'</td>'
-        +'<td class="r">'+Math.round(sendPrice(SV,s)).toLocaleString("ko-KR")+'</td>'
+        +'<td class="r">'+Math.round(sendPriceOut(SV,s)).toLocaleString("ko-KR")+'</td>'
         +'<td class="c">'+esc(methodLabel(s.method))+'</td>'
         +'<td>'+esc(s.note||"")+'</td></tr>');});
     h.push('</tbody></table></body></html>');
