@@ -201,6 +201,23 @@
   .footnote code{background:var(--accent-soft);color:var(--total-ink);padding:1px 6px;border-radius:5px;font-family:ui-monospace,Menlo,monospace;font-size:11px;}
   .tag{display:inline-block;font-size:10px;font-weight:700;padding:1px 6px;border-radius:5px;}
   .tag.usd{background:#EAF1F7;color:var(--usd);} .tag.rmb{background:#F7EEE7;color:var(--rmb);}
+  /* 거래처 발송용 내보내기 */
+  .xm-back{position:fixed;inset:0;background:rgba(24,32,43,.45);display:flex;align-items:center;justify-content:center;z-index:9999;padding:18px;}
+  .xm-box{background:var(--surface);border-radius:12px;max-width:1060px;width:100%;max-height:90vh;display:flex;flex-direction:column;box-shadow:0 18px 50px rgba(0,0,0,.28);overflow:hidden;}
+  .xm-hd{padding:14px 18px;border-bottom:1px solid var(--line);display:flex;align-items:center;gap:10px;flex-wrap:wrap;}
+  .xm-hd h3{margin:0;font-size:16px;font-weight:700;}
+  .xm-bd{padding:12px 18px;overflow:auto;flex:1;}
+  .xm-ft{padding:12px 18px;border-top:1px solid var(--line);display:flex;gap:9px;align-items:center;flex-wrap:wrap;}
+  .xm-bd table{border-collapse:collapse;width:100%;font-size:12.5px;}
+  .xm-bd th,.xm-bd td{border:1px solid var(--line);padding:5px 7px;text-align:left;vertical-align:middle;}
+  .xm-bd th{background:#F0F2F1;font-size:11.5px;color:var(--muted);text-align:center;}
+  .xm-bd td.c{text-align:center;} .xm-bd td.r{text-align:right;}
+  .xm-thumb{width:56px;height:56px;object-fit:contain;background:#FAFAFA;border:1px solid var(--line);border-radius:4px;display:block;margin:0 auto;}
+  .xm-no{display:block;width:56px;height:56px;line-height:56px;text-align:center;font-size:10px;color:var(--muted);background:#FAFAFA;border:1px dashed var(--line-strong);border-radius:4px;margin:0 auto;}
+  .xm-bd input.xm-in{width:100%;border:1px solid var(--line);border-radius:4px;padding:3px 5px;font:inherit;font-size:12px;background:var(--input-bg);}
+  .xm-src{display:flex;gap:8px;align-items:center;flex-wrap:wrap;font-size:11.5px;color:var(--muted);}
+  .xm-src input{border:1px solid var(--line-strong);border-radius:6px;padding:5px 8px;font:inherit;font-size:12px;background:var(--input-bg);width:130px;margin-left:4px;}
+  .xm-stat{font-size:12px;color:var(--muted);}
 </style>
 </head>
 <body>
@@ -2247,6 +2264,11 @@
       xt.classList.add("hide-exp");xb.textContent=_lb+" 보기";xb.classList.add("primary");
       xb.addEventListener("click",function(){var hid=xt.classList.toggle("hide-exp");xb.textContent=_lb+(hid?" 보기":" 숨기기");xb.classList.toggle("primary",hid);});})();
     supSearchWire(SV.search,SV.sug);
+    (function(){var eb0=document.getElementById(SV.exportBtn);if(!eb0||!eb0.parentNode)return;
+      var sb=document.createElement("button");sb.className="btn";sb.id=SV.key+"SendExport";
+      sb.textContent="거래처 발송용 내보내기";sb.title="이미지가 들어간 거래처 발송용 단가리스트 — Excel 또는 PDF";
+      eb0.parentNode.insertBefore(sb,eb0.nextSibling);
+      sb.addEventListener("click",function(){openSendModal(SV);});})();
     var b=document.getElementById(SV.exportBtn);if(!b)return;
     b.addEventListener("click",function(){
       if(!window.XLSX){alert("Excel 라이브러리를 불러오지 못했습니다.");return;}
@@ -2682,6 +2704,7 @@
 
   /* ===== importer ===== */
   var ALIAS={code:["품목코드","품번","코드","code","sku","품목번호"],name:["품목명","제품명"],supplier:["구매처명","구매처","매입처"],port:["fob 항구","fob항구","fob","항구","출항항구","선적항","포트","port","pol","출항"],outbox:["outbox size","outbox","아웃박스","아웃박스 사이즈","박스사이즈"],inbox:["inbox size","inbox","인박스","이너박스","칼라박스","컬러박스"],prevCost:["입고단가","기존원가","기존 원가","이전원가","previous cost"],prevSupply:["출고단가","기존공급단가","기존 공급단가","기존공급가","이전공급단가","previous supply"],prevSupplyDlv:["출고단가(택배발송)","출고단가(택배)","택배출고단가","출고단가 택배발송"],prevConsumer:["소비자가","기존소비자가","기존 소비자가","소비자가격","기존소비자가격","consumer price"],special:["특판단가","특판 단가","특판"],coupangBuy:["쿠팡사입가","쿠팡사입","쿠팡 사입","쿠팡사입 단가"],setUse:["세트","세트여부","세트사용"],dsPrice:["ds단가","ds 단가","대성단가"],hdPrice:["hd단가","hd 단가","핸든단가"],
+    specText:["규격","사이즈","제품규격","spec","size","스펙"],note:["적요","비고","메모","note","remark"],
     container:["컨테이너","운임종류","container","컨테이너종류","컨종류"],
     cur:["결제통화","통화"],priceUsd:["usd","매입가(usd)"],priceRmb:["rmb","매입가(위안)","매입가(rmb)","위안"],
     eaCt:["ea/ct","eact","입수","ea"],cbm:["cbm"],dutyRate:["관세","관세율(%)","관세율"]};
@@ -2710,7 +2733,7 @@
       var portv=String(g("port")||"").trim();
       function _girth(v){var mm=String(v==null?"":v).match(/\d+(?:\.\d+)?/g);return (mm&&mm.length>=3)?Math.round((parseFloat(mm[0])+parseFloat(mm[1])+parseFloat(mm[2]))/10*10)/10:0;}
       var gv=_girth(g("outbox")),giv=_girth(g("inbox"));
-      out.push({id:nid(),code:String(codeV==null?"":codeV).trim(),name:String(name==null?"":name).trim(),supplier:String(g("supplier")||"").trim(),port:portv,container:ct,girth:gv,girthIn:giv,prevCost:n(g("prevCost")),prevSupply:n(g("prevSupply")),prevSupplyDlv:n(g("prevSupplyDlv")),prevConsumer:n(g("prevConsumer")),special:n(g("special")),coupangBuy:n(g("coupangBuy")),dsPrice:n(g("dsPrice")),hdPrice:n(g("hdPrice")),setUse:String(g("setUse")||"").trim(),inland:defInland(portv,ct),
+      out.push({id:nid(),code:String(codeV==null?"":codeV).trim(),name:String(name==null?"":name).trim(),supplier:String(g("supplier")||"").trim(),port:portv,container:ct,girth:gv,girthIn:giv,prevCost:n(g("prevCost")),prevSupply:n(g("prevSupply")),prevSupplyDlv:n(g("prevSupplyDlv")),prevConsumer:n(g("prevConsumer")),special:n(g("special")),coupangBuy:n(g("coupangBuy")),dsPrice:n(g("dsPrice")),hdPrice:n(g("hdPrice")),setUse:String(g("setUse")||"").trim(),specText:String(g("specText")||"").trim(),note:String(g("note")||"").trim(),inland:defInland(portv,ct),
         cur:cur,priceUsd:n(pu),priceRmb:n(pr),eaCt:n(g("eaCt")),cbm:n(g("cbm")),dutyRate:n(g("dutyRate"))});}
     return out;
   }
@@ -2811,6 +2834,237 @@
     document.addEventListener("mousedown",function(e){var t=e.target;if(t&&t.classList&&t.classList.contains("pick-cb"))snap();},true);
     document.addEventListener("keydown",function(e){if((e.ctrlKey||e.metaKey)&&!e.shiftKey&&(e.key==="z"||e.key==="Z"||e.key==="ㅋ")){if(_undo.length){e.preventDefault();var s=_undo.pop();state.products=s.products;state.productsLcl=s.productsLcl;SUP_DEFS.forEach(function(d){state[d.key]=s[d.key];});try{panelFCL.render();panelLCL.render();panelMIX.render();panelSOLO.render();renderSupplyAll();}catch(err){}}}});
   })();
+  /* ===== 거래처 발송용 단가리스트 (이미지 첨부) ===== */
+  var IMGCFG_KEY="hendon_imgsrc_v1";
+  var IMGCFG={dir:"images/",zip:"images.zip"};
+  try{var _icRaw=localStorage.getItem(IMGCFG_KEY);if(_icRaw){var _ic=JSON.parse(_icRaw);if(_ic&&_ic.dir!=null)IMGCFG.dir=String(_ic.dir);if(_ic&&_ic.zip!=null)IMGCFG.zip=String(_ic.zip);}}catch(e){}
+  function saveImgCfg(){try{localStorage.setItem(IMGCFG_KEY,JSON.stringify(IMGCFG));}catch(e){}}
+  var IMGX=["jpg","jpeg","png","webp","gif"];
+  var imgCache={},zipIndex=null,zipFrom=null,dirExtHit=null;
+  function tightC(v){return String(v==null?"":v).trim().toUpperCase().replace(/\s+/g,"");}
+  function looseC(v){return tightC(v).replace(/[-_.]/g,"");}
+  function loadScriptOnce(url,has){
+    if(has())return Promise.resolve();
+    return new Promise(function(res,rej){var el=document.createElement("script");el.src=url;
+      el.onload=function(){has()?res():rej(new Error("load"));};el.onerror=function(){rej(new Error("load"));};
+      document.head.appendChild(el);});}
+  function needJSZip(){return loadScriptOnce("https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js",function(){return !!window.JSZip;});}
+  function needExcelJS(){return loadScriptOnce("https://cdnjs.cloudflare.com/ajax/libs/exceljs/4.4.0/exceljs.min.js",function(){return !!window.ExcelJS;});}
+  function buildZipIndex(){
+    var path=String(IMGCFG.zip||"").trim();
+    if(!path)return Promise.resolve([]);
+    if(zipIndex&&zipFrom===path)return Promise.resolve(zipIndex);
+    return fetch(path,{cache:"no-store"}).then(function(r){if(!r.ok)throw new Error("nozip");return r.arrayBuffer();})
+      .then(function(buf){return needJSZip().then(function(){return window.JSZip.loadAsync(buf);});})
+      .then(function(zip){
+        var list=[];
+        zip.forEach(function(p,f){
+          if(f.dir)return;
+          var nm=p.split("/").pop();
+          if(!nm||nm.charAt(0)==="."||p.indexOf("__MACOSX")===0)return;
+          var dot=nm.lastIndexOf(".");if(dot<1)return;
+          var ext=nm.slice(dot+1).toLowerCase();
+          if(IMGX.indexOf(ext)<0)return;
+          var stem=nm.slice(0,dot);
+          list.push({t:tightC(stem),l:looseC(stem),name:nm,ext:ext,file:f});});
+        zipIndex=list;zipFrom=path;return list;})
+      .catch(function(){zipIndex=[];zipFrom=path;return zipIndex;});}
+  function pickEntry(list,code){
+    var t=tightC(code),l=looseC(code),best=null,i,e;
+    if(!t||!list||!list.length)return null;
+    function take(x){if(!best||x.name.length<best.name.length)best=x;}
+    for(i=0;i<list.length;i++)if(list[i].t===t)take(list[i]);
+    if(best)return best;
+    for(i=0;i<list.length;i++){e=list[i];if(e.t.indexOf(t)===0&&/^[-_.#( \[]/.test(e.t.slice(t.length)))take(e);}
+    if(best)return best;
+    for(i=0;i<list.length;i++)if(list[i].l===l)take(list[i]);
+    if(best)return best;
+    for(i=0;i<list.length;i++){e=list[i];if(e.l.indexOf(l)===0&&/^\d?$/.test(e.l.slice(l.length)))take(e);}
+    return best;}
+  function probeImg(src){return new Promise(function(res){var im=new Image(),done=false;
+    var tm=setTimeout(function(){if(!done){done=true;res(null);}},8000);
+    im.onload=function(){if(done)return;done=true;clearTimeout(tm);res(im);};
+    im.onerror=function(){if(done)return;done=true;clearTimeout(tm);res(null);};
+    im.src=src;});}
+  var THUMB_PX=200;
+  function imgToThumb(im){
+    var w=im.naturalWidth||im.width,h=im.naturalHeight||im.height;
+    if(!w||!h)return null;
+    var sc=Math.min(1,THUMB_PX/Math.max(w,h));
+    var cw=Math.max(1,Math.round(w*sc)),ch=Math.max(1,Math.round(h*sc));
+    try{
+      var cv=document.createElement("canvas");cv.width=cw;cv.height=ch;
+      var cx=cv.getContext("2d");cx.fillStyle="#FFFFFF";cx.fillRect(0,0,cw,ch);cx.drawImage(im,0,0,cw,ch);
+      return {url:cv.toDataURL("image/jpeg",0.82),w:cw,h:ch};
+    }catch(err){return null;}}
+  function dirCandidates(code){
+    var dir=String(IMGCFG.dir||"").trim();
+    if(!dir)return [];
+    if(dir.slice(-1)!=="/")dir+="/";
+    var names=[],out=[],raw=String(code||"").trim();
+    if(raw)names.push(raw);
+    if(tightC(raw)&&names.indexOf(tightC(raw))<0)names.push(tightC(raw));
+    var exts=IMGX.slice();
+    if(dirExtHit){exts=[dirExtHit].concat(IMGX.filter(function(x){return x!==dirExtHit;}));}
+    names.forEach(function(nm){exts.forEach(function(x){out.push({url:dir+encodeURIComponent(nm)+"."+x,ext:x});});});
+    return out;}
+  function getThumb(code){
+    var key=tightC(code);
+    if(!key)return Promise.resolve(null);
+    if(imgCache[key]!==undefined)return Promise.resolve(imgCache[key]);
+    return buildZipIndex().then(function(list){
+      var e=pickEntry(list,code);
+      if(!e)return null;
+      return e.file.async("base64").then(function(b64){
+        return probeImg("data:image/"+(e.ext==="jpg"?"jpeg":e.ext)+";base64,"+b64);});})
+      .then(function(im){
+        if(im)return im;
+        if(zipIndex&&zipIndex.length)return null;
+        var urls=dirCandidates(code);
+        function step(k){if(k>=urls.length)return Promise.resolve(null);
+          return probeImg(urls[k].url).then(function(x){if(x)dirExtHit=urls[k].ext;return x||step(k+1);});}
+        return step(0);})
+      .then(function(im){var t=im?imgToThumb(im):null;imgCache[key]=t;return t;})
+      .catch(function(){imgCache[key]=null;return null;});}
+  function sendPrice(SV,s){
+    var disc=n(s.discount);
+    if(SV.chain)return n(s.supplyVal2)*1.1;
+    if(SV.group)return n(s.groupSupply);
+    if(SV.online)return n(s.supplyVal)*(1-disc/100);
+    return n(s.supplyVal)*(1-disc/100)*1.1;}
+  function methodLabel(m){return m==="파렛트"?"화물(파렛트)":(m==="택배단품"?"택배(단품)":(m||""));}
+  function esc(v){return String(v==null?"":v).replace(/[&<>"]/g,function(c){return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c];});}
+  function sendFileName(SV,ext){
+    var d=new Date(),y=d.getFullYear(),mo=("0"+(d.getMonth()+1)).slice(-2),da=("0"+d.getDate()).slice(-2);
+    return "pricelist_"+SV.key+"_"+y+mo+da+"."+ext;}
+  function sendTitle(SV){return String(SV.exportName||"").replace("거래처 공급단가 - ","")+" 단가리스트";}
+  function dlBlob(blob,name){var u=URL.createObjectURL(blob);var a=document.createElement("a");a.href=u;a.download=name;
+    document.body.appendChild(a);a.click();a.remove();setTimeout(function(){URL.revokeObjectURL(u);},800);}
+  function openSendModal(SV){
+    var src=state[SV.key]||[];
+    if(!src.length){alert("이 탭에 품목이 없습니다.");return;}
+    var picked=src.filter(function(r){return r.pick;});
+    var use=picked.length?picked:src;
+    var rows=use.map(function(s){return {s:s,code:s.code||"",name:s.name||"",thumb:undefined};});
+    var back=document.createElement("div");back.className="xm-back";
+    var box=document.createElement("div");box.className="xm-box";back.appendChild(box);
+    box.innerHTML='<div class="xm-hd"><h3>거래처 발송용 단가리스트</h3>'
+      +'<span class="xm-stat" id="xmScope"></span>'
+      +'<div class="xm-src" style="margin-left:auto;">'
+      +'<label>이미지 폴더 <input id="xmDir" type="text" placeholder="images/"></label>'
+      +'<label>ZIP <input id="xmZip" type="text" placeholder="images.zip"></label>'
+      +'<button class="btn" id="xmLoad">이미지 불러오기</button></div>'
+      +'<div class="xm-stat" id="xmStat" style="flex-basis:100%;"></div></div>'
+      +'<div class="xm-bd" id="xmBody"></div>'
+      +'<div class="xm-ft"><button class="btn primary" id="xmXlsx">Excel(.xlsx)로 저장</button>'
+      +'<button class="btn primary" id="xmPdf">PDF로 저장(인쇄)</button>'
+      +'<span class="xm-stat" style="margin-left:auto;">규격·적요는 여기서 바로 입력할 수 있고, 입력값은 해당 탭에 저장됩니다.</span>'
+      +'<button class="btn" id="xmClose">닫기</button></div>';
+    document.body.appendChild(back);
+    var q=function(id){return box.querySelector("#"+id);};
+    q("xmScope").textContent=sendTitle(SV)+" · "+(picked.length?("선택 "+use.length+"개"):("전체 "+use.length+"개"));
+    q("xmDir").value=IMGCFG.dir;q("xmZip").value=IMGCFG.zip;
+    function close(){if(back.parentNode)back.parentNode.removeChild(back);}
+    q("xmClose").addEventListener("click",close);
+    back.addEventListener("mousedown",function(e){if(e.target===back)close();});
+    document.addEventListener("keydown",function onEsc(e){if(e.key==="Escape"){close();document.removeEventListener("keydown",onEsc);}});
+    function paint(){
+      var h=['<table><thead><tr><th style="width:110px;">품목코드</th><th>품목명</th><th style="width:74px;">이미지</th>'
+        +'<th style="width:150px;">규격</th><th style="width:110px;">공급단가<br><span style="font-weight:400;">VAT 포함</span></th>'
+        +'<th style="width:82px;">배송방식</th><th style="width:180px;">적요</th></tr></thead><tbody>'];
+      rows.forEach(function(r,i){
+        var s=r.s,img=r.thumb===undefined?'<span class="xm-no">대기</span>':(r.thumb?'<img class="xm-thumb" src="'+r.thumb.url+'">':'<span class="xm-no">없음</span>');
+        h.push('<tr><td class="c">'+esc(r.code)+'</td><td>'+esc(r.name)+'</td><td class="c">'+img+'</td>'
+          +'<td><input class="xm-in" data-k="specText" data-i="'+i+'" value="'+esc(s.specText||"")+'"></td>'
+          +'<td class="r num">'+Math.round(sendPrice(SV,s)).toLocaleString("ko-KR")+'</td>'
+          +'<td class="c">'+esc(methodLabel(s.method))+'</td>'
+          +'<td><input class="xm-in" data-k="note" data-i="'+i+'" value="'+esc(s.note||"")+'"></td></tr>');});
+      h.push('</tbody></table>');
+      q("xmBody").innerHTML=h.join("");
+      q("xmBody").querySelectorAll("input.xm-in").forEach(function(el){
+        el.addEventListener("change",function(){rows[+el.dataset.i].s[el.dataset.k]=el.value;});});}
+    paint();
+    function loadImages(reset){
+      IMGCFG.dir=q("xmDir").value.trim();IMGCFG.zip=q("xmZip").value.trim();saveImgCfg();
+      if(reset){imgCache={};zipIndex=null;zipFrom=null;}
+      var btn=q("xmLoad");btn.disabled=true;
+      var i=0,hit=0;
+      function step(){
+        if(!back.parentNode)return;
+        if(i>=rows.length){btn.disabled=false;
+          q("xmStat").textContent="이미지 "+hit+"/"+rows.length+"개 매칭"+(hit<rows.length?" — 매칭 안 된 "+(rows.length-hit)+"개는 빈칸으로 나갑니다. 파일명이 품목코드와 같은지 확인하세요.":"");
+          paint();return;}
+        q("xmStat").textContent="이미지 불러오는 중… "+(i+1)+"/"+rows.length;
+        getThumb(rows[i].code).then(function(t){rows[i].thumb=t||null;if(t)hit++;i++;if(i%10===0)paint();step();});}
+      step();}
+    q("xmLoad").addEventListener("click",function(){loadImages(true);});
+    loadImages(false);
+    q("xmXlsx").addEventListener("click",function(){
+      var b=q("xmXlsx");b.disabled=true;q("xmStat").textContent="Excel 파일 만드는 중…";
+      exportSendXlsx(SV,rows).then(function(){b.disabled=false;q("xmStat").textContent="Excel 파일을 저장했습니다.";})
+        .catch(function(err){b.disabled=false;q("xmStat").textContent="Excel 저장 실패 — 인터넷 연결(라이브러리 로딩)을 확인하세요.";});});
+    q("xmPdf").addEventListener("click",function(){exportSendPdf(SV,rows);});
+  }
+  function xlBorder(){var t={style:"thin",color:{argb:"FFD8DDE1"}};return {top:t,left:t,bottom:t,right:t};}
+  function exportSendXlsx(SV,rows){
+    return needExcelJS().then(function(){
+      var wb=new window.ExcelJS.Workbook(),ws=wb.addWorksheet("단가표");
+      ws.columns=[{width:15},{width:42},{width:18},{width:22},{width:17},{width:12},{width:28}];
+      ws.mergeCells(1,1,1,7);
+      var tc=ws.getCell(1,1);tc.value=sendTitle(SV);tc.font={bold:true,size:14};tc.alignment={vertical:"middle"};
+      ws.getRow(1).height=28;
+      var hd=["품목코드","품목명","이미지","규격","공급단가(VAT 포함)","배송방식","적요"],hr=ws.getRow(2);
+      hd.forEach(function(t,i){var c=hr.getCell(i+1);c.value=t;c.font={bold:true,size:11};
+        c.alignment={vertical:"middle",horizontal:"center",wrapText:true};
+        c.fill={type:"pattern",pattern:"solid",fgColor:{argb:"FFF0F2F1"}};c.border=xlBorder();});
+      hr.height=22;
+      rows.forEach(function(r,i){
+        var rn=i+3,row=ws.getRow(rn),s=r.s;
+        row.getCell(1).value=r.code;row.getCell(2).value=r.name;
+        row.getCell(4).value=s.specText||"";
+        row.getCell(5).value=Math.round(sendPrice(SV,s));row.getCell(5).numFmt="#,##0";
+        row.getCell(6).value=methodLabel(s.method);row.getCell(7).value=s.note||"";
+        for(var c=1;c<=7;c++){var cc=row.getCell(c);cc.border=xlBorder();
+          cc.alignment={vertical:"middle",horizontal:(c===5?"right":((c===1||c===6)?"center":"left")),wrapText:(c===2||c===7)};}
+        row.height=r.thumb?86:22;
+        if(r.thumb){
+          var m=/^data:image\/([a-z]+);base64,(.*)$/.exec(r.thumb.url);
+          if(m){
+            var id=wb.addImage({base64:m[2],extension:(m[1]==="jpg"?"jpeg":m[1])});
+            var sc=Math.min(112/r.thumb.w,108/r.thumb.h,1);
+            ws.addImage(id,{tl:{col:2.06,row:rn-1+0.06},ext:{width:Math.round(r.thumb.w*sc),height:Math.round(r.thumb.h*sc)},editAs:"oneCell"});}}});
+      ws.views=[{state:"frozen",ySplit:2}];
+      return wb.xlsx.writeBuffer();})
+    .then(function(buf){dlBlob(new Blob([buf],{type:"application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"}),sendFileName(SV,"xlsx"));});}
+  function exportSendPdf(SV,rows){
+    var w=window.open("","_blank");
+    if(!w){alert("팝업이 차단되어 있습니다. 이 사이트의 팝업을 허용한 뒤 다시 눌러주세요.");return;}
+    var d=new Date(),ds=d.getFullYear()+"-"+("0"+(d.getMonth()+1)).slice(-2)+"-"+("0"+d.getDate()).slice(-2);
+    var h=['<!DOCTYPE html><html lang="ko"><head><meta charset="UTF-8"><title>'+esc(sendTitle(SV))+'</title><style>',
+      '@page{size:A4;margin:12mm 10mm;}',
+      'body{font-family:-apple-system,"Apple SD Gothic Neo","Malgun Gothic","Noto Sans KR",sans-serif;color:#18202B;margin:0;}',
+      'h1{font-size:17px;margin:0 0 3px;} .sub{font-size:11px;color:#6A7480;margin:0 0 10px;}',
+      'table{border-collapse:collapse;width:100%;font-size:11px;}',
+      'th,td{border:1px solid #CDD4D9;padding:5px 6px;vertical-align:middle;}',
+      'th{background:#F0F2F1;font-size:10.5px;}',
+      'td.c{text-align:center;} td.r{text-align:right;font-variant-numeric:tabular-nums;}',
+      'img{width:78px;height:78px;object-fit:contain;display:block;margin:0 auto;}',
+      'tr{page-break-inside:avoid;} thead{display:table-header-group;}',
+      '</style></head><body>',
+      '<h1>'+esc(sendTitle(SV))+'</h1><p class="sub">작성일 '+ds+' · 총 '+rows.length+'개 품목 · 공급단가는 부가세 포함 금액입니다.</p>',
+      '<table><thead><tr><th style="width:11%">품목코드</th><th>품목명</th><th style="width:88px">이미지</th>',
+      '<th style="width:15%">규격</th><th style="width:12%">공급단가</th><th style="width:9%">배송방식</th><th style="width:16%">적요</th></tr></thead><tbody>'];
+    rows.forEach(function(r){var s=r.s;
+      h.push('<tr><td class="c">'+esc(r.code)+'</td><td>'+esc(r.name)+'</td>'
+        +'<td class="c">'+(r.thumb?'<img src="'+r.thumb.url+'">':"")+'</td>'
+        +'<td>'+esc(s.specText||"")+'</td>'
+        +'<td class="r">'+Math.round(sendPrice(SV,s)).toLocaleString("ko-KR")+'</td>'
+        +'<td class="c">'+esc(methodLabel(s.method))+'</td>'
+        +'<td>'+esc(s.note||"")+'</td></tr>');});
+    h.push('</tbody></table></body></html>');
+    w.document.open();w.document.write(h.join(""));w.document.close();
+    setTimeout(function(){try{w.focus();w.print();}catch(e){}},500);}
+
   function buildDbFromRows(){return PRODUCT_ROWS.map(function(r){var o={};PRODUCT_COLS.forEach(function(k,i){o[k]=r[i];});return o;});}
   renderContainerSeg();renderPortSelect();renderFreightEditor();renderCostCards();renderDomestic();
   Promise.all([
