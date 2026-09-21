@@ -1699,26 +1699,42 @@
   var PROD_VIEWS=[FCL,MIX,SOLO,LCL];
   var panelFCL=makePanel(FCL),panelLCL=makePanel(LCL),panelMIX=makePanel(MIX),panelSOLO=makePanel(SOLO);
   function repaintAllProducts(){panelFCL.repaint();panelLCL.repaint();panelMIX.repaint();panelSOLO.repaint();renderSupplyAll();}
+  function normCode(v){return String(v==null?"":v).trim();}
+  function looseCode(v){return normCode(v).toUpperCase().replace(/[\s\-_.]/g,"");}
   function baseCostVal(s){
-    var src=null,code=(s.code||"").trim(),nm=(s.name||"").trim();
+    var src=null,code=normCode(s.code),nm=(s.name||"").trim();
     var list=(s.costMode==="lcl")?state.productsLcl:((s.costMode==="fclmix")?state.productsFclMix:((s.costMode==="fclsolo")?state.productsFclSolo:state.products));
-    if(code!=="")list.forEach(function(p){if((p.code||"").trim()===code)src=p;});
+    if(code!==""){list.forEach(function(p){if(normCode(p.code)===code)src=p;});
+      if(!src){var _lc=looseCode(code);if(_lc!=="")list.forEach(function(p){if(looseCode(p.code)===_lc)src=p;});}}
     if(!src&&code===""&&nm!=="")list.forEach(function(p){if((p.name||"").trim()===nm)src=p;});
     var r=src||s;
     var qm=(s.costMode==="lcl"||s.costMode==="fclmix"||s.costMode==="fclsolo");
     var q=qm?n(r.qty):0;
     if(qm&&!(q>0))q=n(s.srcQty)||1000;
     return (s.costMode==="lcl"?costOfLcl:(s.costMode==="fclmix"?costOfFclMix:(s.costMode==="fclsolo"?costOfFclSolo:costOf)))(r,r.port,r.container,qm?q:undefined).total;}
-  function chainPrice2(code){
-    if(!code)return null;var f=null;
-    state.supplyDsHd.forEach(function(x){if((x.code||"")!==""&&x.code===code)f=x;});
+  function findChainRow(code,name){
+    var c=normCode(code),nm=String(name==null?"":name).trim(),f=null;
+    if(c!==""){
+      state.supplyDsHd.forEach(function(x){if(normCode(x.code)===c)f=x;});
+      if(!f){var _lc=looseCode(c);if(_lc!=="")state.supplyDsHd.forEach(function(x){if(looseCode(x.code)===_lc)f=x;});}
+    }
+    if(!f&&nm!=="")state.supplyDsHd.forEach(function(x){if(normCode(x.code)===""&&String(x.name||"").trim()===nm)f=x;});
+    if(!f&&c===""&&nm!=="")state.supplyDsHd.forEach(function(x){if(String(x.name||"").trim()===nm)f=x;});
+    return f;}
+  function chainPrice2(code,name){
+    var f=findChainRow(code,name);
     if(!f)return null;
     var base=baseCostVal(f),m1=n(f.margin),s1=f.manualSup?n(f.supplyVal):((m1>=0&&m1<100)?base/(1-m1/100):0);
     var m2=n(f.margin2),s2=f.manualSup2?n(f.supplyVal2):((m2>=0&&m2<100)?s1/(1-m2/100):0);
     return s2>0?s2:null;}
   function supplyCostVal(SV,s){
-    if(SV&&SV.hd){var v=chainPrice2(s.code);if(v!=null)return v;}
+    if(SV&&SV.hd){var v=chainPrice2(s.code,s.name);if(v!=null){s._chainSrc=true;return v;}s._chainSrc=false;}
     return baseCostVal(s);}
+  function markChainCost(SV,s,td){
+    if(!td||!SV||!SV.hd)return;var sp=td.querySelector(".num");if(!sp)return;
+    if(s._chainSrc===false){sp.style.color="var(--muted)";sp.style.borderBottom="1px dashed var(--muted)";
+      td.title="'그라첸(대성\u2192핸든)' 시트에 이 품목이 없어 입고원가로 계산 중입니다. 같은 품목코드로 해당 시트에 추가하면 대성\u2192핸든 공급단가가 원가로 반영됩니다.";}
+    else{sp.style.color="";sp.style.borderBottom="";td.title="대성\u2192핸든 공급단가 기준";}}
   function renderHdViews(){SUP_VIEWS.forEach(function(V){if(V.hd)renderSupply(V);});}
   function syncConsumer(curKey,code,v){
     if(!code)return;
@@ -2041,7 +2057,7 @@
           return {td:td,inp:inp};}
         var _v1=qtyBoxV();qtyTd=_v1.td;qtyEl=_v1.inp;var _v2=qtyBoxV();qtyTd2=_v2.td;qtyEl2=_v2.inp;var _v3=qtyBoxV();qtyTd3=_v3.td;qtyEl3=_v3.inp;
       } else {var _a=feeInp("ad");adTd=_a.td;adEl=_a.inp;var _f=feeInp("fee");feeTd=_f.td;feeEl=_f.inp;}}
-    var tdDel=document.createElement("td");if(chain)tdDel.className="gsep";var del=document.createElement("button");del.className="del-btn";del.textContent="×";del.title="삭제";del.addEventListener("click",function(){state[SV.key]=state[SV.key].filter(function(x){return x.id!==s.id;});renderSupply(SV);});tdDel.appendChild(del);
+    var tdDel=document.createElement("td");if(chain)tdDel.className="gsep";var del=document.createElement("button");del.className="del-btn";del.textContent="×";del.title="삭제";del.addEventListener("click",function(){state[SV.key]=state[SV.key].filter(function(x){return x.id!==s.id;});renderSupply(SV);if(chain)renderHdViews();});tdDel.appendChild(del);
     function refresh(skip){
       var _vi=document.body.classList.contains("vat-incl-only"),vf=(!online&&_vi)?1.1:1,ovf=(online&&!_vi)?(1/1.1):1;
       if(chain){
@@ -2081,7 +2097,7 @@
         if(qtyEl&&skip!=="qty:1")qtyEl.value=vq>0?moneyFmt(vq):"";
         if(qtyEl2&&skip!=="qty:2")qtyEl2.value=vq>0?moneyFmt(vq):"";
         if(qtyEl3&&skip!=="qty:3")qtyEl3.value=vq>0?moneyFmt(vq):"";
-        tdCost.querySelector(".num").textContent=won(VC);
+        tdCost.querySelector(".num").textContent=won(VC);markChainCost(SV,s,tdCost);
         tdDom.querySelector(".num").textContent=won(vdom);
         tdD.querySelector(".num").textContent=won(vD);
         var paintP=function(td,v){var e=td.querySelector(".num");e.textContent=won(v);e.style.color=v<0?"var(--danger)":"";};
@@ -2106,7 +2122,7 @@
         if(adEl&&skip!=="ad")adEl.value=A>0?moneyFmt(A):"";
         if(qtyEl&&skip!=="qty:1")qtyEl.value=gq>0?moneyFmt(gq):"";
         if(qtyEl2&&skip!=="qty:2")qtyEl2.value=gq>0?moneyFmt(gq):"";
-        tdCost.querySelector(".num").textContent=won(C);
+        tdCost.querySelector(".num").textContent=won(C);markChainCost(SV,s,tdCost);
         tdD.querySelector(".num").textContent=won(D);
         tdDom.querySelector(".num").textContent=won(gdom*1.1);
         var gps=tdProfit.querySelector(".num");gps.textContent=won(gprofit);gps.style.color=gprofit<0?"var(--danger)":"";
@@ -2133,7 +2149,7 @@
       if(online){var rev=dsup/1.1,couponEx=n(s.coupon)/1.1,feeAmt=rev*(n(s.ad)+n(s.fee))/100;
         profit=rev-cost-dom-couponEx-feeAmt;rate=rev>0?profit/rev*100:0;domDisp=dom*1.1;dDisp=dsup;}
       else{profit=dsup-(cost+dom);rate=dsup>0?profit/dsup*100:0;domDisp=dom;dDisp=dsup;}
-      tdCost.querySelector(".num").textContent=won(online?cost*1.1*ovf:cost*vf);
+      tdCost.querySelector(".num").textContent=won(online?cost*1.1*ovf:cost*vf);markChainCost(SV,s,tdCost);
       if(domEl){if(skip!=="dom")domEl.value=moneyFmt(domDisp);}else tdDom.querySelector(".num").textContent=won(domDisp*ovf);tdD.querySelector(".num").textContent=won(dDisp*vf*ovf);
       var ps=tdProfit.querySelector(".num");ps.textContent=won(profit);ps.style.color=profit<0?"var(--danger)":"";
       var rs=tdRate.querySelector(".num");rs.textContent=(Math.round(rate*10)/10).toLocaleString("ko-KR")+"%";rs.style.color=profit<0?"var(--danger)":"";
